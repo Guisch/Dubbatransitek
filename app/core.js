@@ -813,7 +813,7 @@ module.exports = function(io, lang, similarSongsOption) {
         files.push(res.musics[i].music_id.file);
       }
 
-      var zipped = zip.zipFiles(path.join(__dirname, '../public/playlists', name + '.zip'), files);
+      var zipped = zip.zipFiles(path.join(__dirname, '../public/playlists', name.replace(/[^a-z0-9]/gi, '_') + '.zip'), files);
 
       zipped.on('progess', function(i) {
         socket.emit('wait', lang.playlist.zipProgress.replace('%d', Math.round(i * 100 / res.musics.length)));
