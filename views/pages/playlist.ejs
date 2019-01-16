@@ -220,7 +220,7 @@
       });
 
       socket.on('downloadReady', function() {
-        window.location.replace('./public/playlists/<%= name %>.zip');
+        window.location.replace('./public/playlists/<%= name.replace(/[^a-z0-9]/gi, '_') %>.zip');
       });
 
       socket.on('playlistInfo(<%= name %>)', function(opt1, opt2) {
