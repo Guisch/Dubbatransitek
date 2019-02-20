@@ -704,7 +704,7 @@ module.exports = function(io, lang, similarSongsOption) {
 
   function downloadSongsFromYoutube(url, callback, progress) {
     ssyd.getYoutubePlaylist(url, function(err, res) {
-      if (err) {
+      if (err || res === undefined) {
         console.log('Error when getting infos from playlist URL:', url, err);
         return callback();
       }
@@ -723,7 +723,7 @@ module.exports = function(io, lang, similarSongsOption) {
 
   function downloadSongsFromSoundcloud(url, callback, progress) {
     ssyd.getSoundcloudPlaylist(url, function(err, res) {
-      if (err) {
+      if (err || res === undefined) {
         console.log('Error when getting infos from playlist URL:', url, err);
         return callback();
       }
@@ -740,7 +740,7 @@ module.exports = function(io, lang, similarSongsOption) {
 
   function downloadSongsFromDeezer(url, callback, progress) {
     ssyd.getDeezerPlaylist(url, function(err, res) {
-      if (err) {
+      if (err || res === undefined) {
         console.log('Error when getting infos from playlist URL:', url, err);
         return callback();
       }
@@ -755,7 +755,7 @@ module.exports = function(io, lang, similarSongsOption) {
 
   function downloadSongsFromSpotify(url, callback, progress) {
     ssyd.getSpotifyPlaylist(url, function(err, res) {
-      if (err) {
+      if (err || res === undefined) {
         console.log('Error when getting infos from playlist URL:', url, err);
         return callback();
       }
