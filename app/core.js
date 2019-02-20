@@ -524,7 +524,7 @@ module.exports = function(io, lang, similarSongsOption) {
           }
 
           callback(true, lang.playlist.successfullyDeletedPlaylist)
-          return fs.unlink(path.join(__dirname, '../public/playlists', result.name.replace(/[^a-z0-9]/gi + '.zip'), function(err) {
+          return fs.unlink(path.join(__dirname, '../public/playlists', result.name.replace(/[^a-z0-9]/gi, '_') + '.zip'), function(err) {
             if (err)
               console.log(err);
           });
@@ -549,7 +549,7 @@ module.exports = function(io, lang, similarSongsOption) {
                 }
 
                 callback(true, lang.playlist.successfullyDeletedPlaylist);
-                return fs.unlink(path.join(__dirname, '../public/playlists', result.name.replace(/[^a-z0-9]/gi + '.zip'), function(err) {
+                return fs.unlink(path.join(__dirname, '../public/playlists', result.name.replace(/[^a-z0-9]/gi, '_') + '.zip'), function(err) {
                   if (err)
                     console.log(err);
                 });
@@ -1129,7 +1129,7 @@ module.exports = function(io, lang, similarSongsOption) {
 
             var songFile = infos[i].music_id.file.split('/').pop();
             removeQueue.push(function(next) {
-              zip.removeFileFromZip(path.join(__dirname, '../public/playlists', playlistName.replace(/[^a-z0-9]/gi + '.zip'), songFile, next);
+              zip.removeFileFromZip(path.join(__dirname, '../public/playlists', playlistName.replace(/[^a-z0-9]/gi, '_') + '.zip'), songFile, next);
             });
             infos.splice(i, 1);
 
