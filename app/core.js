@@ -173,7 +173,7 @@ module.exports = function(io, lang, similarSongsOption) {
 
   function addSongFromYoutube(playlistName, url, userId, callback, progress) {
     ssyd.getYoutubeMusicInfos(url, function(err, res) {
-      if (err)
+      if (err || res === undefined)
         return callback(false, lang.playlist.errorAddingMusic);
 
       downloadSong(url, function(file, infos) {
@@ -184,7 +184,7 @@ module.exports = function(io, lang, similarSongsOption) {
 
   function addSongFromDeezer(playlistName, url, userId, callback, progress) {
     ssyd.getDeezerMusicInfos(url, function(err, res) {
-      if (err)
+      if (err || res === undefined)
         return callback(false, lang.playlist.errorAddingMusic);
 
       downloadSong('https://www.youtube.com/watch?v=' + res.youtubeRes.id.videoId, function(file, infos, url) {
@@ -195,7 +195,7 @@ module.exports = function(io, lang, similarSongsOption) {
 
   function addSongFromSoundcloud(playlistName, url, userId, callback, progress) {
     ssyd.getSoundcloudInfos(url, function(err, res) {
-      if (err)
+      if (err || res === undefined)
         return callback(false, lang.playlist.errorAddingMusic);
 
       downloadSong(url, function(file, infos) {
@@ -206,7 +206,7 @@ module.exports = function(io, lang, similarSongsOption) {
 
   function addSongFromSpotify(playlistName, url, userId, callback, progress) {
     ssyd.getSpotifyMusicInfos(url, function(err, res) {
-      if (err)
+      if (err || res === undefined)
         return callback(false, lang.playlist.errorAddingMusic);
 
       downloadSong('https://www.youtube.com/watch?v=' + res.youtubeRes.id.videoId, function(file, infos, url) {
@@ -712,6 +712,10 @@ module.exports = function(io, lang, similarSongsOption) {
       res.forEach(function(elem, index) {
         setTimeout(function() {
           ssyd.getYoutubeMusicInfos('https://www.youtube.com/watch?v=' + elem.contentDetails.videoId, function(err, res) {
+            if (err || res === undefined) {
+              console.log('Error when getting infos from playlist URL:', url, err);
+              return callback();
+            }
             downloadSong('https://www.youtube.com/watch?v=' + res.youtubeRes.id.videoId, callback, progress, res);
           }, {
             items: [elem]
@@ -731,6 +735,10 @@ module.exports = function(io, lang, similarSongsOption) {
       res.forEach(function(elem, index) {
         setTimeout(function() {
           ssyd.getSoundcloudInfos(elem.permalink_url, function(err, res) {
+            if (err || res === undefined) {
+              console.log('Error when getting infos from playlist URL:', url, err);
+              return callback();
+            }
             downloadSong(res.soundcloudRes.permalink_url, callback, progress, res);
           }, elem);
         }, index * 100);
@@ -747,7 +755,11 @@ module.exports = function(io, lang, similarSongsOption) {
 
       for (var i = 0; i < res.length; i++) {
         ssyd.getDeezerMusicInfos(res[i].link, function(err, res) {
-          downloadSong('https://www.youtube.com/watch?v=' + res.youtubeRes.id.videoId, callback, progress, res);
+            if (err || res === undefined) {
+              console.log('Error when getting infos from playlist URL:', url, err);
+              return callback();
+            }
+            downloadSong('https://www.youtube.com/watch?v=' + res.youtubeRes.id.videoId, callback, progress, res);
         }, res[i]);
       }
     });
@@ -762,7 +774,11 @@ module.exports = function(io, lang, similarSongsOption) {
 
       for (var i = 0; i < res.length; i++) {
         ssyd.getSpotifyMusicInfos(res[i].track.external_urls.spotify, function(err, res) {
-          downloadSong('https://www.youtube.com/watch?v=' + res.youtubeRes.id.videoId, callback, progress, res);
+            if (err || res === undefined) {
+              console.log('Error when getting infos from playlist URL:', url, err);
+              return callback();
+            }
+            downloadSong('https://www.youtube.com/watch?v=' + res.youtubeRes.id.videoId, callback, progress, res);
         }, res[i].track);
       }
     });
@@ -790,7 +806,7 @@ module.exports = function(io, lang, similarSongsOption) {
 
   function findAndDownload(query, callback, progress) {
     ssyd.findVideoFromQuery(query, function(err, res) {
-      if (err) {
+      if (err || res === undefined) {
         console.log('Error when finding video from query:', query, err);
         return callback();
       }
