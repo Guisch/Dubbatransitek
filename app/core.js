@@ -989,90 +989,94 @@ module.exports = function(io, lang, similarSongsOption) {
         return socket.emit('fail', lang.playlist.sessionExpired);
       }
 
-      url = ssyd.sanitizeUrl(uri);
+      uri = uri.split(",");
+      
+      for (var i = 0; i < uri.length; i++) {
+        url = ssyd.sanitizeUrl(uri[i]);
 
-      function successSongFunction(success, msg) {
-        if (!success)
-          return socket.emit('fail', msg);
+        function successSongFunction(success, msg) {
+          if (!success)
+            return socket.emit('fail', msg);
 
-        getSongs(playlistName, function(infos) {
-          socket.emit('songs(' + playlistName + ')', infos);
-          socket.broadcast.emit('songs(' + playlistName + ')', infos);
-        });
+          getSongs(playlistName, function(infos) {
+            socket.emit('songs(' + playlistName + ')', infos);
+            socket.broadcast.emit('songs(' + playlistName + ')', infos);
+          });
 
-        return socket.emit('success', msg);
-      }
+          return socket.emit('success', msg);
+        }
 
-      switch (getUrlType(url)) {
-        case 'deezer':
-          addSongFromDeezer(playlistName, url, socket.request.session.passport.user, successSongFunction, function(dl) {
-            progressMessages(dl, socket);
-          });
-          break;
-        case 'spotify':
-          addSongFromSpotify(playlistName, url, socket.request.session.passport.user, successSongFunction, function(dl) {
-            progressMessages(dl, socket);
-          });
-          break;
-        case 'youtube':
-          addSongFromYoutube(playlistName, url, socket.request.session.passport.user, successSongFunction, function(dl) {
-            progressMessages(dl, socket);
-          });
-          break;
-        case 'soundcloud':
-          addSongFromSoundcloud(playlistName, url, socket.request.session.passport.user, successSongFunction, function(dl) {
-            progressMessages(dl, socket);
-          });
-          break;
-        case 'soundcloud playlist':
-          Playlist.addImportedPl(playlistName, url);
-          downloadSongsFromSoundcloud(url, function(file, infos, url) {
-            addSongToPlaylist(file, infos, url, socket.request.session.passport.user, playlistName, successSongFunction);
-          }, function(dl) {
-            progressMessages(dl, socket);
-          });
-          break;
-        case 'youtube playlist':
-          Playlist.addImportedPl(playlistName, url);
-          downloadSongsFromYoutube(url, function(file, infos, url) {
-            addSongToPlaylist(file, infos, url, socket.request.session.passport.user, playlistName, successSongFunction);
-          }, function(dl) {
-            progressMessages(dl, socket);
-          });
-          break;
-        case 'spotify playlist':
-          Playlist.addImportedPl(playlistName, url);
-          downloadSongsFromSpotify(url, function(file, infos, url) {
-            addSongToPlaylist(file, infos, url, socket.request.session.passport.user, playlistName, successSongFunction);
-          }, function(dl) {
-            progressMessages(dl, socket);
-          });
-          break;
-        case 'deezer playlist':
-          Playlist.addImportedPl(playlistName, url);
-          downloadSongsFromDeezer(url, function(file, infos, url) {
-            addSongToPlaylist(file, infos, url, socket.request.session.passport.user, playlistName, successSongFunction);
-          }, function(dl) {
-            progressMessages(dl, socket);
-          });
-          break;
-        case 'query':
-          addSongFromQuery(playlistName, url, socket.request.session.passport.user, function(success, msg) {
-            if (!success)
-              return socket.emit('fail', msg);
-
-            getSongs(playlistName, function(infos) {
-              socket.emit('songs(' + playlistName + ')', infos);
-              socket.broadcast.emit('songs(' + playlistName + ')', infos);
+        switch (getUrlType(url)) {
+          case 'deezer':
+            addSongFromDeezer(playlistName, url, socket.request.session.passport.user, successSongFunction, function(dl) {
+              progressMessages(dl, socket);
             });
+            break;
+          case 'spotify':
+            addSongFromSpotify(playlistName, url, socket.request.session.passport.user, successSongFunction, function(dl) {
+              progressMessages(dl, socket);
+            });
+            break;
+          case 'youtube':
+            addSongFromYoutube(playlistName, url, socket.request.session.passport.user, successSongFunction, function(dl) {
+              progressMessages(dl, socket);
+            });
+            break;
+          case 'soundcloud':
+            addSongFromSoundcloud(playlistName, url, socket.request.session.passport.user, successSongFunction, function(dl) {
+              progressMessages(dl, socket);
+            });
+            break;
+          case 'soundcloud playlist':
+            Playlist.addImportedPl(playlistName, url);
+            downloadSongsFromSoundcloud(url, function(file, infos, url) {
+              addSongToPlaylist(file, infos, url, socket.request.session.passport.user, playlistName, successSongFunction);
+            }, function(dl) {
+              progressMessages(dl, socket);
+            });
+            break;
+          case 'youtube playlist':
+            Playlist.addImportedPl(playlistName, url);
+            downloadSongsFromYoutube(url, function(file, infos, url) {
+              addSongToPlaylist(file, infos, url, socket.request.session.passport.user, playlistName, successSongFunction);
+            }, function(dl) {
+              progressMessages(dl, socket);
+            });
+            break;
+          case 'spotify playlist':
+            Playlist.addImportedPl(playlistName, url);
+            downloadSongsFromSpotify(url, function(file, infos, url) {
+              addSongToPlaylist(file, infos, url, socket.request.session.passport.user, playlistName, successSongFunction);
+            }, function(dl) {
+              progressMessages(dl, socket);
+            });
+            break;
+          case 'deezer playlist':
+            Playlist.addImportedPl(playlistName, url);
+            downloadSongsFromDeezer(url, function(file, infos, url) {
+              addSongToPlaylist(file, infos, url, socket.request.session.passport.user, playlistName, successSongFunction);
+            }, function(dl) {
+              progressMessages(dl, socket);
+            });
+            break;
+          case 'query':
+            addSongFromQuery(playlistName, url, socket.request.session.passport.user, function(success, msg) {
+              if (!success)
+                return socket.emit('fail', msg);
 
-            return socket.emit('success', msg);
-          }, function(dl) {
-            progressMessages(dl, socket);
-          });
-          break;
-        default:
-          return socket.emit('fail', lang.playlist.errorImportingPlaylist);
+              getSongs(playlistName, function(infos) {
+                socket.emit('songs(' + playlistName + ')', infos);
+                socket.broadcast.emit('songs(' + playlistName + ')', infos);
+              });
+
+              return socket.emit('success', msg);
+            }, function(dl) {
+              progressMessages(dl, socket);
+            });
+            break;
+          default:
+            return socket.emit('fail', lang.playlist.errorImportingPlaylist);
+        }
       }
     });
 
