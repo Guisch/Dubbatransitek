@@ -973,7 +973,7 @@ module.exports = function(io, lang, similarSongsOption) {
           return socket.emit('fail', msg1);
         }
 
-        addPlaylist(name, tag, ssyd.sanitizeUrl(url), socket.request.session.passport.user, function() {
+        addPlaylist(name, tag, url ? ssyd.sanitizeUrl(url) : undefined, socket.request.session.passport.user, function() {
           Playlist.getUserPlaylists(socket.request.session.passport.user, function(res) {
             socket.emit('myPlaylists', res);
             socket.broadcast.emit('myPlaylists', res);
