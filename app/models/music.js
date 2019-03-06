@@ -68,9 +68,8 @@ musicSchema.statics.getWaveform = function(id, userId, callback) {
 
     if (newPlayCounter === undefined)
       newPlayCounter[userId] = 1;
-    } else {
+    else
       newPlayCounter[userId]++;
-    }
 
     this.model('Music').update({
         _id: id
