@@ -711,12 +711,12 @@ module.exports = function(io, lang, similarSongsOption) {
 
       res.forEach(function(elem, index) {
         setTimeout(function() {
-          ssyd.getYoutubeMusicInfos('https://www.youtube.com/watch?v=' + elem.contentDetails.videoId, function(err, res) {
+          ssyd.getYoutubeMusicInfos(ssyd.sanitizeUrl('https://www.youtube.com/watch?v=' + elem.contentDetails.videoId), function(err, res) {
             if (err || res === undefined) {
               console.log('Error when getting infos from playlist URL:', url, err);
               return callback();
             }
-            downloadSong('https://www.youtube.com/watch?v=' + res.youtubeRes.id.videoId, callback, progress, res);
+            downloadSong(ssyd.sanitizeUrl('https://www.youtube.com/watch?v=' + res.youtubeRes.id.videoId), callback, progress, res);
           }, {
             items: [elem]
           });
@@ -734,12 +734,12 @@ module.exports = function(io, lang, similarSongsOption) {
 
       res.forEach(function(elem, index) {
         setTimeout(function() {
-          ssyd.getSoundcloudInfos(elem.permalink_url, function(err, res) {
+          ssyd.getSoundcloudInfos(ssyd.sanitizeUrl(elem.permalink_url), function(err, res) {
             if (err || res === undefined) {
               console.log('Error when getting infos from playlist URL:', url, err);
               return callback();
             }
-            downloadSong(res.soundcloudRes.permalink_url, callback, progress, res);
+            downloadSong(ssyd.sanitizeUrl(res.soundcloudRes.permalink_url), callback, progress, res);
           }, elem);
         }, index * 100);
       });
@@ -754,12 +754,12 @@ module.exports = function(io, lang, similarSongsOption) {
       }
 
       for (var i = 0; i < res.length; i++) {
-        ssyd.getDeezerMusicInfos(res[i].link, function(err, res) {
+        ssyd.getDeezerMusicInfos(ssyd.sanitizeUrl(res[i].link), function(err, res) {
             if (err || res === undefined) {
               console.log('Error when getting infos from playlist URL:', url, err);
               return callback();
             }
-            downloadSong('https://www.youtube.com/watch?v=' + res.youtubeRes.id.videoId, callback, progress, res);
+            downloadSong(ssyd.sanitizeUrl('https://www.youtube.com/watch?v=' + res.youtubeRes.id.videoId), callback, progress, res);
         }, res[i]);
       }
     });
@@ -773,12 +773,12 @@ module.exports = function(io, lang, similarSongsOption) {
       }
 
       for (var i = 0; i < res.length; i++) {
-        ssyd.getSpotifyMusicInfos(res[i].track.external_urls.spotify, function(err, res) {
+        ssyd.getSpotifyMusicInfos(ssyd.sanitizeUrl(res[i].track.external_urls.spotify), function(err, res) {
             if (err || res === undefined) {
               console.log('Error when getting infos from playlist URL:', url, err);
               return callback();
             }
-            downloadSong('https://www.youtube.com/watch?v=' + res.youtubeRes.id.videoId, callback, progress, res);
+            downloadSong(ssyd.sanitizeUrl('https://www.youtube.com/watch?v=' + res.youtubeRes.id.videoId), callback, progress, res);
         }, res[i].track);
       }
     });
