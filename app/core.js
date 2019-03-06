@@ -947,7 +947,7 @@ module.exports = function(io, lang, similarSongsOption) {
     });
 
     socket.on('getWaveform', function(isWs1, id) {
-      Music.getWaveform(id, function(res) {
+      Music.getWaveform(id, socket.request.session.passport.user, function(res) {
         if (!res)
           return socket.emit('fail', lang.playlist.cantGetWaveform);
 
@@ -1006,7 +1006,7 @@ module.exports = function(io, lang, similarSongsOption) {
       }
 
       uri = uri.split(",");
-      
+
       for (var i = 0; i < uri.length; i++) {
         url = ssyd.sanitizeUrl(uri[i]);
 

@@ -35,7 +35,8 @@ var musicSchema = mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  waveform: [Number]
+  waveform: [Number],
+  playCounter: Object
 });
 
 musicSchema.statics.isUrlAlreadyDownloaded = function(url, callback) {
@@ -52,12 +53,33 @@ musicSchema.statics.isUrlAlreadyDownloaded = function(url, callback) {
   });
 }
 
-musicSchema.statics.getWaveform = function(id, callback) {
+musicSchema.statics.getWaveform = function(id, userId, callback) {
   return this.model('Music').findOne({
     _id: id
   }, function(err, res) {
     if (err)
       return callback();
+
+    var newPlayCounter = res.playCounter;
+
+    if (res.playCounter === undefined || res.playCounter === null) {
+      newPlayCounter = {};
+    }
+
+    if (newPlayCounter === undefined)
+      newPlayCounter[userId] = 1;
+    } else {
+      newPlayCounter[userId]++;
+    }
+
+    this.model('Music').update({
+        _id: id
+    }, {
+        playCounter: newPlayCounter
+    }, function(err2, res2) {
+        if(err2)
+            console.log("Error while updating playCounter", err2);
+    });
 
     return callback(res.waveform);
   })
