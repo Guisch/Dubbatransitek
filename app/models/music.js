@@ -66,7 +66,7 @@ musicSchema.statics.getWaveform = function(id, userId, callback) {
       newPlayCounter = {};
     }
 
-    if (newPlayCounter === undefined)
+    if (newPlayCounter[userId] === undefined)
       newPlayCounter[userId] = 1;
     else
       newPlayCounter[userId]++;

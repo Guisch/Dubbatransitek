@@ -936,7 +936,7 @@ module.exports = function(io, lang, similarSongsOption) {
     socket.on('getSongs', function(name) {
       getSongs(name, function(infos) {
         if (infos)
-          socket.emit('songs(' + name + ')', infos);
+          socket.emit('songs(' + name + ')', infos, undefined, undefined, socket.request.session.passport.user);
       });
     });
 

@@ -150,7 +150,7 @@
 
       socket.emit('getPlaylistInfo', '<%= name %>');
 
-      socket.on('songs(<%= name %>)', function(infos, songRemoved, currentSongId) {
+      socket.on('songs(<%= name %>)', function(infos, songRemoved, currentSongId, userId) {
         songsList = infos.slice(0);
 
         if (currentSongId !== undefined) {
@@ -190,6 +190,10 @@
           html += '</div>';
           html += '<div class="margintop-15">' + songsList[i].music_id.title + ' - ' + songsList[i].music_id.artistName + '</div>';
           html += '</div><div class="col-md-3 hidden-xs">';
+          if (songsList[i].music_id.playCounter !== undefined)
+            html += '<span>' + songsList[i].music_id.playCounter[userId] === undefined ? '0' : songsList[i].music_id.playCounter[userId] + '</span>';
+          else
+            html += '<span>0</span>';
           html += '<a class="link btn btn-info" href="./music?id=' + encodeURI(songsList[i].music_id._id) + '"><i class="fa fa-pencil" aria-hidden="true"></i></a>';
           html += '<button class="link btn btn-danger" onClick="deleteSong(' + i.toString() + ')"><i class="fa fa-trash" aria-hidden="true"></i></button>';
           html += '<a class="link btn btn-primary" target="_blank" href="' + songsList[i].music_id.file + '"><i class="fa fa-download" aria-hidden="true"></i></a>';
