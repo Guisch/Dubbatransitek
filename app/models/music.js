@@ -71,7 +71,7 @@ musicSchema.statics.getWaveform = function(id, userId, callback) {
     else
       newPlayCounter[userId]++;
 
-    this.model('Music').update({
+    mongoose.model('Music').update({
         _id: id
     }, {
         playCounter: newPlayCounter
