@@ -25,7 +25,7 @@ var path = require('path');
 // The zip library needs to be instantiated:
 var zip = require('systemzipjs');
 
-module.exports = function(io, lang, similarSongsOption) {
+module.exports = function (io, lang, similarSongsOption) {
 
   // -------------------------------------------------------------------------
   // Function
@@ -80,7 +80,7 @@ module.exports = function(io, lang, similarSongsOption) {
   }
 
   function getSongs(name, callback) {
-    Playlist.getPlaylist(name, function(res) {
+    Playlist.getPlaylist(name, function (res) {
       if (res && res.length != 0)
         callback(res.musics.sort(compare));
     });
@@ -93,8 +93,8 @@ module.exports = function(io, lang, similarSongsOption) {
       return callback(false, lang.playlist.errorAddingMusic);
 
     if (infos._id) {
-      return Playlist.getPlaylist(playlistName, function(res) {
-        return Playlist.addMusicToPlaylist(playlistName, infos._id, userId, res.musics.length, function(err) {
+      return Playlist.getPlaylist(playlistName, function (res) {
+        return Playlist.addMusicToPlaylist(playlistName, infos._id, userId, res.musics.length, function (err) {
           if (err) {
             console.log(err);
             return callback(false, lang.playlist.errorAddingMusic);
@@ -147,18 +147,18 @@ module.exports = function(io, lang, similarSongsOption) {
     music.file = file;
     music._id = mongoose.Types.ObjectId();
 
-    simplewaveformjs.getWaveform(file, function(wfRes) {
+    simplewaveformjs.getWaveform(file, function (wfRes) {
       if (wfRes && wfRes.length != 0)
         music.waveform = wfRes;
 
-      music.save(function(err) {
+      music.save(function (err) {
         if (err) {
           console.log(err);
           return callback(false, lang.playlist.errorAddingMusic);
         }
 
-        Playlist.getPlaylist(playlistName, function(res) {
-          Playlist.addMusicToPlaylist(playlistName, music._id, userId, res.musics.length, function(err) {
+        Playlist.getPlaylist(playlistName, function (res) {
+          Playlist.addMusicToPlaylist(playlistName, music._id, userId, res.musics.length, function (err) {
             if (err) {
               console.log(err);
               return callback(false, lang.playlist.errorAddingMusic);
@@ -172,44 +172,44 @@ module.exports = function(io, lang, similarSongsOption) {
   }
 
   function addSongFromYoutube(playlistName, url, userId, callback, progress) {
-    ssyd.getYoutubeMusicInfos(url, function(err, res) {
+    ssyd.getYoutubeMusicInfos(url, function (err, res) {
       if (err || res === undefined)
         return callback(false, lang.playlist.errorAddingMusic);
 
-      downloadSong(url, function(file, infos) {
+      downloadSong(url, function (file, infos) {
         addSongToPlaylist(file, infos, url, userId, playlistName, callback);
       }, progress, res);
     });
   }
 
   function addSongFromDeezer(playlistName, url, userId, callback, progress) {
-    ssyd.getDeezerMusicInfos(url, function(err, res) {
+    ssyd.getDeezerMusicInfos(url, function (err, res) {
       if (err || res === undefined)
         return callback(false, lang.playlist.errorAddingMusic);
 
-      downloadSong('https://www.youtube.com/watch?v=' + res.youtubeRes.id.videoId, function(file, infos, url) {
+      downloadSong('https://www.youtube.com/watch?v=' + res.youtubeRes.id.videoId, function (file, infos, url) {
         addSongToPlaylist(file, infos, url, userId, playlistName, callback);
       }, progress, res);
     });
   }
 
   function addSongFromSoundcloud(playlistName, url, userId, callback, progress) {
-    ssyd.getSoundcloudInfos(url, function(err, res) {
+    ssyd.getSoundcloudInfos(url, function (err, res) {
       if (err || res === undefined)
         return callback(false, lang.playlist.errorAddingMusic);
 
-      downloadSong(url, function(file, infos) {
+      downloadSong(url, function (file, infos) {
         addSongToPlaylist(file, infos, url, userId, playlistName, callback);
       }, progress, res);
     });
   }
 
   function addSongFromSpotify(playlistName, url, userId, callback, progress) {
-    ssyd.getSpotifyMusicInfos(url, function(err, res) {
+    ssyd.getSpotifyMusicInfos(url, function (err, res) {
       if (err || res === undefined)
         return callback(false, lang.playlist.errorAddingMusic);
 
-      downloadSong('https://www.youtube.com/watch?v=' + res.youtubeRes.id.videoId, function(file, infos, url) {
+      downloadSong('https://www.youtube.com/watch?v=' + res.youtubeRes.id.videoId, function (file, infos, url) {
         addSongToPlaylist(file, infos, url, userId, playlistName, callback);
       }, progress, res);
     });
@@ -225,7 +225,7 @@ module.exports = function(io, lang, similarSongsOption) {
     if (url) {
       switch (getUrlType(url)) {
         case 'youtube':
-          newPlaylist.save(function(err) {
+          newPlaylist.save(function (err) {
             if (err) {
               console.log(err);
               return callback(false, lang.playlist.errorCreatingPlaylist);
@@ -235,7 +235,7 @@ module.exports = function(io, lang, similarSongsOption) {
           });
           break;
         case 'soundcloud':
-          newPlaylist.save(function(err) {
+          newPlaylist.save(function (err) {
             if (err) {
               console.log(err);
               return callback(false, lang.playlist.errorCreatingPlaylist);
@@ -245,7 +245,7 @@ module.exports = function(io, lang, similarSongsOption) {
           });
           break;
         case 'deezer':
-          newPlaylist.save(function(err) {
+          newPlaylist.save(function (err) {
             if (err) {
               console.log(err);
               return callback(false, lang.playlist.errorCreatingPlaylist);
@@ -255,7 +255,7 @@ module.exports = function(io, lang, similarSongsOption) {
           });
           break;
         case 'spotify':
-          newPlaylist.save(function(err) {
+          newPlaylist.save(function (err) {
             if (err) {
               console.log(err);
               return callback(false, lang.playlist.errorCreatingPlaylist);
@@ -266,58 +266,58 @@ module.exports = function(io, lang, similarSongsOption) {
           break;
         case 'soundcloud playlist':
           newPlaylist.importedPl = [url];
-          newPlaylist.save(function(err) {
+          newPlaylist.save(function (err) {
             if (err) {
               console.log(err);
               return callback(false, lang.playlist.errorCreatingPlaylist);
             }
             plCreated();
-            downloadSongsFromSoundcloud(url, function(file, infos, url) {
+            downloadSongsFromSoundcloud(url, function (file, infos, url) {
               addSongToPlaylist(file, infos, url, userId, name, callback);
             }, progress);
           });
           break;
         case 'youtube playlist':
           newPlaylist.importedPl = [url];
-          newPlaylist.save(function(err) {
+          newPlaylist.save(function (err) {
             if (err) {
               console.log(err);
               return callback(false, lang.playlist.errorCreatingPlaylist);
             }
             plCreated();
-            downloadSongsFromYoutube(url, function(file, infos, url) {
+            downloadSongsFromYoutube(url, function (file, infos, url) {
               addSongToPlaylist(file, infos, url, userId, name, callback);
             }, progress);
           });
           break;
         case 'spotify playlist':
           newPlaylist.importedPl = [url];
-          newPlaylist.save(function(err) {
+          newPlaylist.save(function (err) {
             if (err) {
               console.log(err);
               return callback(false, lang.playlist.errorCreatingPlaylist);
             }
             plCreated();
-            downloadSongsFromSpotify(url, function(file, infos, url) {
+            downloadSongsFromSpotify(url, function (file, infos, url) {
               addSongToPlaylist(file, infos, url, userId, name, callback);
             }, progress);
           });
           break;
         case 'deezer playlist':
           newPlaylist.importedPl = [url];
-          newPlaylist.save(function(err) {
+          newPlaylist.save(function (err) {
             if (err) {
               console.log(err);
               return callback(false, lang.playlist.errorCreatingPlaylist);
             }
             plCreated();
-            downloadSongsFromDeezer(url, function(file, infos, url) {
+            downloadSongsFromDeezer(url, function (file, infos, url) {
               addSongToPlaylist(file, infos, url, userId, name, callback);
             }, progress);
           });
           break;
         case 'query':
-          newPlaylist.save(function(err) {
+          newPlaylist.save(function (err) {
             if (err) {
               console.log(err);
               return callback(false, lang.playlist.errorCreatingPlaylist);
@@ -333,7 +333,7 @@ module.exports = function(io, lang, similarSongsOption) {
       }
 
     } else {
-      newPlaylist.save(function(err) {
+      newPlaylist.save(function (err) {
         if (err) {
           console.log(err);
           return callback(false, lang.playlist.errorCreatingPlaylist);
@@ -345,7 +345,7 @@ module.exports = function(io, lang, similarSongsOption) {
   }
 
   function addSongFromQuery(playlistName, query, userId, callback, progress) {
-    findAndDownload(query, function(file, infos, url) {
+    findAndDownload(query, function (file, infos, url) {
       if (!file || !infos)
         return callback(false, lang.playlist.errorAddingMusic);
 
@@ -359,11 +359,11 @@ module.exports = function(io, lang, similarSongsOption) {
 
     var urlYt = 'https://www.youtube.com/watch?v=' + foundedSongs[index].youtubeId;
 
-    Music.isUrlAlreadyDownloaded(urlYt, function(itis) {
+    Music.isUrlAlreadyDownloaded(urlYt, function (itis) {
       if (itis)
         return forSimilar(foundedSongs, index + 1, callback);
 
-      ssyd.getYoutubeMusicInfos(urlYt, function(err, res) {
+      ssyd.getYoutubeMusicInfos(urlYt, function (err, res) {
         if (err)
           return forSimilar(foundedSongs, index + 1, callback);
 
@@ -386,7 +386,7 @@ module.exports = function(io, lang, similarSongsOption) {
 
         return Music.findOne({
           $or: searchParams
-        }, function(err, res) {
+        }, function (err, res) {
           if (err || res === undefined || res == null || (res != null && res.length == 0))
             return callback(true, urlYt);
 
@@ -399,7 +399,7 @@ module.exports = function(io, lang, similarSongsOption) {
   function addSimilar(playlistName, userId, musicId, callback, progress) {
     Music.findOne({
       _id: musicId
-    }, function(err, res) {
+    }, function (err, res) {
       if (err) return;
 
       if (!res) return callback(false, lang.playlist.needToListenFirst);
@@ -411,11 +411,11 @@ module.exports = function(io, lang, similarSongsOption) {
         lastfmAPIKey: similarSongsOption.lastFM.lastfmAPIKey,
         lastfmAPISecret: similarSongsOption.lastFM.lastfmAPISecret,
         youtubeAPIKey: similarSongsOption.youtube.youtubeAPIKey
-      }, function(err, foundedSongs) {
+      }, function (err, foundedSongs) {
         if (err || foundedSongs.length == 0)
           return callback(false, lang.playlist.unableToFindSimilarSong);
 
-        forSimilar(foundedSongs, 0, function(success, url) {
+        forSimilar(foundedSongs, 0, function (success, url) {
           if (!success)
             return callback(false, lang.playlist.unableToFindSimilarSong);
 
@@ -428,10 +428,10 @@ module.exports = function(io, lang, similarSongsOption) {
   // Edit
 
   function editPlaylistOptions(playlistName, userId, syncImportedPlaylist, autoAddSimilarSong, callback) {
-    if (typeof(syncImportedPlaylist, autoAddSimilarSong) == "boolean") {
+    if (typeof (syncImportedPlaylist, autoAddSimilarSong) == "boolean") {
       Playlist.findOne({
         name: playlistName
-      }, function(err, result) {
+      }, function (err, result) {
         if (err || result == null)
           return callback(false, lang.playlist.unableToEditOptions);
 
@@ -443,7 +443,7 @@ module.exports = function(io, lang, similarSongsOption) {
         }, {
           syncImportedPlaylist: syncImportedPlaylist,
           autoAddSimilarSong: autoAddSimilarSong
-        }, function(err) {
+        }, function (err) {
           if (err)
             return callback(false, lang.playlist.unableToEditOptions);
 
@@ -458,7 +458,7 @@ module.exports = function(io, lang, similarSongsOption) {
     if (Number.isInteger(oldIndex) && oldIndex > -1 && Number.isInteger(newIndex) && newIndex > -1) {
       Playlist.findOne({
         name: playlistName
-      }, function(err, res) {
+      }, function (err, res) {
         if (err)
           return callback(false, lang.playlist.unableToEditOptions);
 
@@ -491,7 +491,7 @@ module.exports = function(io, lang, similarSongsOption) {
           name: playlistName
         }, {
           musics: musics
-        }, function(err) {
+        }, function (err) {
           if (err)
             return callback(false, lang.playlist.unableToEditOptions);
 
@@ -507,7 +507,7 @@ module.exports = function(io, lang, similarSongsOption) {
   function removePlaylist(playlistName, userId, callback) {
     Playlist.findOne({
       name: playlistName
-    }, function(err, result) {
+    }, function (err, result) {
       if (err)
         return callback(false, lang.playlist.errorDeletingPlaylist);
 
@@ -517,31 +517,31 @@ module.exports = function(io, lang, similarSongsOption) {
       if (result.musics.length == 0) {
         Playlist.remove({
           name: playlistName
-        }, function(err) {
+        }, function (err) {
           if (err) {
             console.log(err);
             return callback(false, lang.playlist.errorDeletingPlaylist);
           }
 
           callback(true, lang.playlist.successfullyDeletedPlaylist)
-          return fs.unlink(path.join(__dirname, '../public/playlists', result.name.replace(/[^a-z0-9]/gi, '_') + '.zip'), function(err) {
+          return fs.unlink(path.join(__dirname, '../public/playlists', result.name.replace(/[^a-z0-9]/gi, '_') + '.zip'), function (err) {
             if (err)
               console.log(err);
           });
         });
       } else {
-        result.musics.forEach(function(music, index) {
-          removeQueue.push(function(next) {
-            removeSong(playlistName, music.music_id, userId, function() {
+        result.musics.forEach(function (music, index) {
+          removeQueue.push(function (next) {
+            removeSong(playlistName, music.music_id, userId, function () {
               next();
             });
           });
 
           if (index == result.musics.length - 1) {
-            removeQueue.push(function(next) {
+            removeQueue.push(function (next) {
               Playlist.remove({
                 name: playlistName
-              }, function(err) {
+              }, function (err) {
                 next();
                 if (err) {
                   console.log(err);
@@ -549,7 +549,7 @@ module.exports = function(io, lang, similarSongsOption) {
                 }
 
                 callback(true, lang.playlist.successfullyDeletedPlaylist);
-                return fs.unlink(path.join(__dirname, '../public/playlists', result.name.replace(/[^a-z0-9]/gi, '_') + '.zip'), function(err) {
+                return fs.unlink(path.join(__dirname, '../public/playlists', result.name.replace(/[^a-z0-9]/gi, '_') + '.zip'), function (err) {
                   if (err)
                     console.log(err);
                 });
@@ -565,7 +565,7 @@ module.exports = function(io, lang, similarSongsOption) {
     //Search for the playlist where to delete song
     Playlist.findOne({
       name: playlistName
-    }, function(err, res) {
+    }, function (err, res) {
       if (err)
         return callback ? callback(false, lang.playlist.errorDeletingPlaylist) : null;
 
@@ -601,27 +601,27 @@ module.exports = function(io, lang, similarSongsOption) {
         musics: musics
       }, {
         safe: true
-      }, function(err) {
+      }, function (err) {
         if (err)
           return callback ? callback(false, lang.playlist.errorDeletingMusic) : null;
 
         //Search if the song is used in another playlist
         Playlist.findOne({
           'musics.music_id': musicId
-        }, function(err, res) {
+        }, function (err, res) {
           //If not, remove the file
           if (err) return callback ? callback(false, lang.playlist.errorDeletingMusic) : null;
 
           if (!res) {
             Music.findOne({
               _id: musicId
-            }, function(err, res) {
+            }, function (err, res) {
               if (err) return callback ? callback(false, lang.playlist.errorDeletingMusic) : null;
 
-              fs.unlink(res.file, function() {
+              fs.unlink(res.file, function () {
                 Music.remove({
                   _id: musicId
-                }, function(err) {
+                }, function (err) {
                   if (err) return callback ? callback(false, lang.playlist.errorDeletingMusic) : null;
 
                   return callback ? callback(true, lang.playlist.successfullyDeletedMusic) : null;
@@ -639,15 +639,15 @@ module.exports = function(io, lang, similarSongsOption) {
   // Download
 
   function downloadSong(url, callback, progress, metaData) {
-    Music.isUrlAlreadyDownloaded(url, function(itis, res) {
+    Music.isUrlAlreadyDownloaded(url, function (itis, res) {
       if (itis === undefined) return callback();
 
       if (itis) return callback(res.file, res, url);
 
       if (!metaData.ituneRes && !metaData.deezerRes && !metaData.spotifyRes) {
-        return downloadQueue.push(function(next) {
+        return downloadQueue.push(function (next) {
           console.log("Downloading", url);
-          var dl = ssyd.downloadAndTag(url, './public/musics', metaData, function(err, filePath, info) {
+          var dl = ssyd.downloadAndTag(url, './public/musics', metaData, function (err, filePath, info) {
             next();
             if (err)
               return callback();
@@ -678,7 +678,7 @@ module.exports = function(io, lang, similarSongsOption) {
 
       return Music.findOne({
         $or: searchParams
-      }, function(err, res) {
+      }, function (err, res) {
         if (err) {
           console.log(err);
           return callback();
@@ -686,9 +686,9 @@ module.exports = function(io, lang, similarSongsOption) {
 
         if (res) return callback(res.file, res, url);
 
-        downloadQueue.push(function(next) {
+        downloadQueue.push(function (next) {
           console.log("Downloading", url);
-          var dl = ssyd.downloadAndTag(url, './public/musics', metaData, function(err, filePath, info) {
+          var dl = ssyd.downloadAndTag(url, './public/musics', metaData, function (err, filePath, info) {
             next();
             if (err)
               return callback();
@@ -703,15 +703,15 @@ module.exports = function(io, lang, similarSongsOption) {
   }
 
   function downloadSongsFromYoutube(url, callback, progress) {
-    ssyd.getYoutubePlaylist(url, function(err, res) {
+    ssyd.getYoutubePlaylist(url, function (err, res) {
       if (err || res === undefined) {
         console.log('Error when getting infos from playlist URL:', url, err);
         return callback();
       }
 
-      res.forEach(function(elem, index) {
-        setTimeout(function() {
-          ssyd.getYoutubeMusicInfos(ssyd.sanitizeUrl('https://www.youtube.com/watch?v=' + elem.contentDetails.videoId), function(err, res) {
+      res.forEach(function (elem, index) {
+        setTimeout(function () {
+          ssyd.getYoutubeMusicInfos(ssyd.sanitizeUrl('https://www.youtube.com/watch?v=' + elem.contentDetails.videoId), function (err, res) {
             if (err || res === undefined) {
               console.log('Error when getting infos from playlist URL:', url, err);
               return callback();
@@ -726,15 +726,15 @@ module.exports = function(io, lang, similarSongsOption) {
   }
 
   function downloadSongsFromSoundcloud(url, callback, progress) {
-    ssyd.getSoundcloudPlaylist(url, function(err, res) {
+    ssyd.getSoundcloudPlaylist(url, function (err, res) {
       if (err || res === undefined) {
         console.log('Error when getting infos from playlist URL:', url, err);
         return callback();
       }
 
-      res.forEach(function(elem, index) {
-        setTimeout(function() {
-          ssyd.getSoundcloudInfos(ssyd.sanitizeUrl(elem.permalink_url), function(err, res) {
+      res.forEach(function (elem, index) {
+        setTimeout(function () {
+          ssyd.getSoundcloudInfos(ssyd.sanitizeUrl(elem.permalink_url), function (err, res) {
             if (err || res === undefined) {
               console.log('Error when getting infos from playlist URL:', url, err);
               return callback();
@@ -747,38 +747,38 @@ module.exports = function(io, lang, similarSongsOption) {
   }
 
   function downloadSongsFromDeezer(url, callback, progress) {
-    ssyd.getDeezerPlaylist(url, function(err, res) {
+    ssyd.getDeezerPlaylist(url, function (err, res) {
       if (err || res === undefined) {
         console.log('Error when getting infos from playlist URL:', url, err);
         return callback();
       }
 
       for (var i = 0; i < res.length; i++) {
-        ssyd.getDeezerMusicInfos(ssyd.sanitizeUrl(res[i].link), function(err, res) {
-            if (err || res === undefined) {
-              console.log('Error when getting infos from playlist URL:', url, err);
-              return callback();
-            }
-            downloadSong(ssyd.sanitizeUrl('https://www.youtube.com/watch?v=' + res.youtubeRes.id.videoId), callback, progress, res);
+        ssyd.getDeezerMusicInfos(ssyd.sanitizeUrl(res[i].link), function (err, res) {
+          if (err || res === undefined) {
+            console.log('Error when getting infos from playlist URL:', url, err);
+            return callback();
+          }
+          downloadSong(ssyd.sanitizeUrl('https://www.youtube.com/watch?v=' + res.youtubeRes.id.videoId), callback, progress, res);
         }, res[i]);
       }
     });
   }
 
   function downloadSongsFromSpotify(url, callback, progress) {
-    ssyd.getSpotifyPlaylist(url, function(err, res) {
+    ssyd.getSpotifyPlaylist(url, function (err, res) {
       if (err || res === undefined) {
         console.log('Error when getting infos from playlist URL:', url, err);
         return callback();
       }
 
       for (var i = 0; i < res.length; i++) {
-        ssyd.getSpotifyMusicInfos(ssyd.sanitizeUrl(res[i].track.external_urls.spotify), function(err, res) {
-            if (err || res === undefined) {
-              console.log('Error when getting infos from playlist URL:', url, err);
-              return callback();
-            }
-            downloadSong(ssyd.sanitizeUrl('https://www.youtube.com/watch?v=' + res.youtubeRes.id.videoId), callback, progress, res);
+        ssyd.getSpotifyMusicInfos(ssyd.sanitizeUrl(res[i].track.external_urls.spotify), function (err, res) {
+          if (err || res === undefined) {
+            console.log('Error when getting infos from playlist URL:', url, err);
+            return callback();
+          }
+          downloadSong(ssyd.sanitizeUrl('https://www.youtube.com/watch?v=' + res.youtubeRes.id.videoId), callback, progress, res);
         }, res[i].track);
       }
     });
@@ -805,7 +805,7 @@ module.exports = function(io, lang, similarSongsOption) {
   }
 
   function findAndDownload(query, callback, progress) {
-    ssyd.findVideoFromQuery(query, function(err, res) {
+    ssyd.findVideoFromQuery(query, function (err, res) {
       if (err || res === undefined) {
         console.log('Error when finding video from query:', query, err);
         return callback();
@@ -816,7 +816,7 @@ module.exports = function(io, lang, similarSongsOption) {
   }
 
   function downloadPlaylist(name, callback, socket) {
-    Playlist.getPlaylist(name, function(res) {
+    Playlist.getPlaylist(name, function (res) {
       if (res === undefined || res == null || (res != null && res.length == 0))
         callback(false, lang.playlist.downloadFail);
 
@@ -831,21 +831,21 @@ module.exports = function(io, lang, similarSongsOption) {
 
       var zipped = zip.zipFiles(path.join(__dirname, '../public/playlists', name.replace(/[^a-z0-9]/gi, '_') + '.zip'), files);
 
-      zipped.on('progess', function(i) {
+      zipped.on('progess', function (i) {
         socket.emit('wait', lang.playlist.zipProgress.replace('%d', Math.round(i * 100 / res.musics.length)));
       });
 
-      zipped.on('error', function(err) {
+      zipped.on('error', function (err) {
         console.log(err);
         return callback(false, lang.playlist.downloadFail);
       });
 
-      zipped.on('end', function() {
+      zipped.on('end', function () {
         Playlist.update({
           name: name
         }, {
           isZipped: true
-        }, function(err) {
+        }, function (err) {
           if (err) {
             console.log(err);
             return callback(false, lang.playlist.downloadFail);
@@ -861,28 +861,28 @@ module.exports = function(io, lang, similarSongsOption) {
 
   function progressMessages(dl, socket) {
     if (dl) {
-      dl.on('progress', function(p) {
+      dl.on('progress', function (p) {
         socket.emit('wait', lang.playlist.download.replace('%d', Math.round(p)));
       });
-      dl.on('fetching', function() {
+      dl.on('fetching', function () {
         socket.emit('wait', lang.playlist.fetching);
       });
-      dl.on('convert-start', function() {
+      dl.on('convert-start', function () {
         socket.emit('wait', lang.playlist.convert);
       });
-      dl.on('convert-end', function() {
+      dl.on('convert-end', function () {
         socket.emit('wait', lang.playlist.convertEnd);
       });
-      dl.on('dl-end', function() {
+      dl.on('dl-end', function () {
         socket.emit('wait', lang.playlist.downloadEnd);
       });
-      dl.on('dl-start', function() {
+      dl.on('dl-start', function () {
         socket.emit('wait', lang.playlist.downloadStart);
       });
-      dl.on('end', function() {
+      dl.on('end', function () {
         socket.emit('wait', lang.playlist.end, true);
       });
-      dl.on('error', function(error) {
+      dl.on('error', function (error) {
         console.log('Error when downloading\n', error);
       })
     } else {
@@ -901,7 +901,7 @@ module.exports = function(io, lang, similarSongsOption) {
 
     Playlist.find({
       name: name
-    }, function(err, pl) {
+    }, function (err, pl) {
       if (err) {
         return callback(false, lang.playlist.errorDB);
       }
@@ -916,38 +916,38 @@ module.exports = function(io, lang, similarSongsOption) {
   // -------------------------------------------------------------------------
   // Not function
   // -------------------------------------------------------------------------
-  io.on('connection', function(socket) {
-    socket.on('getAllPlaylists', function() {
-      Playlist.getAllPlaylists(function(res) {
+  io.on('connection', function (socket) {
+    socket.on('getAllPlaylists', function () {
+      Playlist.getAllPlaylists(function (res) {
         socket.emit('allPlaylists', res);
       })
     });
 
-    socket.on('getMyPlaylists', function() {
+    socket.on('getMyPlaylists', function () {
       if (!socket.request.session.passport.user) {
         return socket.emit('fail', lang.playlist.sessionExpired);
       }
 
-      Playlist.getUserPlaylists(socket.request.session.passport.user, function(res) {
+      Playlist.getUserPlaylists(socket.request.session.passport.user, function (res) {
         socket.emit('myPlaylists', res);
       });
     });
 
-    socket.on('getSongs', function(name) {
-      getSongs(name, function(infos) {
+    socket.on('getSongs', function (name) {
+      getSongs(name, function (infos) {
         if (infos)
           socket.emit('songs(' + name + ')', infos, undefined, undefined, socket.request.session.passport.user);
       });
     });
 
-    socket.on('getPlaylistInfo', function(name) {
-      Playlist.getPlaylistInfo(name, function(syncImportedPlaylist, autoAddSimilarSong) {
+    socket.on('getPlaylistInfo', function (name) {
+      Playlist.getPlaylistInfo(name, function (syncImportedPlaylist, autoAddSimilarSong) {
         socket.emit('playlistInfo(' + name + ')', syncImportedPlaylist, autoAddSimilarSong);
       });
     });
 
-    socket.on('getWaveform', function(isWs1, id) {
-      Music.getWaveform(id, socket.request.session.passport.user, function(res) {
+    socket.on('getWaveform', function (isWs1, id) {
+      Music.getWaveform(id, socket.request.session.passport.user, function (res) {
         if (!res)
           return socket.emit('fail', lang.playlist.cantGetWaveform);
 
@@ -955,9 +955,9 @@ module.exports = function(io, lang, similarSongsOption) {
       })
     });
 
-    socket.on('downloadPlaylist', function(name) {
+    socket.on('downloadPlaylist', function (name) {
       socket.emit('wait', lang.playlist.waitUntilDownloadReady);
-      downloadPlaylist(name, function(success, msg) {
+      downloadPlaylist(name, function (success, msg) {
         socket.emit('wait', lang.playlist.waitUntilDownloadReady, true);
         if (success) {
           socket.emit('success', msg);
@@ -967,40 +967,40 @@ module.exports = function(io, lang, similarSongsOption) {
       }, socket);
     });
 
-    socket.on('addPlaylist', function(name, tag, url) {
-      playlistCreationChecker(name, socket.request.session.passport.user, function(canCreate, msg1) {
+    socket.on('addPlaylist', function (name, tag, url) {
+      playlistCreationChecker(name, socket.request.session.passport.user, function (canCreate, msg1) {
         if (!canCreate) {
           return socket.emit('fail', msg1);
         }
 
-        addPlaylist(name, tag, url ? ssyd.sanitizeUrl(url) : undefined, socket.request.session.passport.user, function() {
-          Playlist.getUserPlaylists(socket.request.session.passport.user, function(res) {
+        addPlaylist(name, tag, url ? ssyd.sanitizeUrl(url) : undefined, socket.request.session.passport.user, function () {
+          Playlist.getUserPlaylists(socket.request.session.passport.user, function (res) {
             socket.emit('myPlaylists', res);
             socket.broadcast.emit('myPlaylists', res);
           });
 
           return socket.emit('success', lang.playlist.successfullyCreatedPlaylistWaitForSong);
-        }, function(success, msg2) {
+        }, function (success, msg2) {
           if (!success)
             return socket.emit('fail', msg2);
 
-          Playlist.getUserPlaylists(socket.request.session.passport.user, function(res) {
+          Playlist.getUserPlaylists(socket.request.session.passport.user, function (res) {
             socket.emit('myPlaylists', res);
             socket.broadcast.emit('myPlaylists', res);
           });
 
-          getSongs(name, function(infos) {
+          getSongs(name, function (infos) {
             socket.broadcast.emit('songs(' + name + ')', infos);
           });
 
           return socket.emit('success', msg2);
-        }, function(dl) {
+        }, function (dl) {
           progressMessages(dl, socket);
         });
       });
     });
 
-    socket.on('addSong', function(playlistName, uri) {
+    socket.on('addSong', function (playlistName, uri) {
       if (!socket.request.session.passport.user) {
         return socket.emit('fail', lang.playlist.sessionExpired);
       }
@@ -1014,7 +1014,7 @@ module.exports = function(io, lang, similarSongsOption) {
           if (!success)
             return socket.emit('fail', msg);
 
-          getSongs(playlistName, function(infos) {
+          getSongs(playlistName, function (infos) {
             socket.emit('songs(' + playlistName + ')', infos);
             socket.broadcast.emit('songs(' + playlistName + ')', infos);
           });
@@ -1024,69 +1024,69 @@ module.exports = function(io, lang, similarSongsOption) {
 
         switch (getUrlType(url)) {
           case 'deezer':
-            addSongFromDeezer(playlistName, url, socket.request.session.passport.user, successSongFunction, function(dl) {
+            addSongFromDeezer(playlistName, url, socket.request.session.passport.user, successSongFunction, function (dl) {
               progressMessages(dl, socket);
             });
             break;
           case 'spotify':
-            addSongFromSpotify(playlistName, url, socket.request.session.passport.user, successSongFunction, function(dl) {
+            addSongFromSpotify(playlistName, url, socket.request.session.passport.user, successSongFunction, function (dl) {
               progressMessages(dl, socket);
             });
             break;
           case 'youtube':
-            addSongFromYoutube(playlistName, url, socket.request.session.passport.user, successSongFunction, function(dl) {
+            addSongFromYoutube(playlistName, url, socket.request.session.passport.user, successSongFunction, function (dl) {
               progressMessages(dl, socket);
             });
             break;
           case 'soundcloud':
-            addSongFromSoundcloud(playlistName, url, socket.request.session.passport.user, successSongFunction, function(dl) {
+            addSongFromSoundcloud(playlistName, url, socket.request.session.passport.user, successSongFunction, function (dl) {
               progressMessages(dl, socket);
             });
             break;
           case 'soundcloud playlist':
             Playlist.addImportedPl(playlistName, url);
-            downloadSongsFromSoundcloud(url, function(file, infos, url) {
+            downloadSongsFromSoundcloud(url, function (file, infos, url) {
               addSongToPlaylist(file, infos, url, socket.request.session.passport.user, playlistName, successSongFunction);
-            }, function(dl) {
+            }, function (dl) {
               progressMessages(dl, socket);
             });
             break;
           case 'youtube playlist':
             Playlist.addImportedPl(playlistName, url);
-            downloadSongsFromYoutube(url, function(file, infos, url) {
+            downloadSongsFromYoutube(url, function (file, infos, url) {
               addSongToPlaylist(file, infos, url, socket.request.session.passport.user, playlistName, successSongFunction);
-            }, function(dl) {
+            }, function (dl) {
               progressMessages(dl, socket);
             });
             break;
           case 'spotify playlist':
             Playlist.addImportedPl(playlistName, url);
-            downloadSongsFromSpotify(url, function(file, infos, url) {
+            downloadSongsFromSpotify(url, function (file, infos, url) {
               addSongToPlaylist(file, infos, url, socket.request.session.passport.user, playlistName, successSongFunction);
-            }, function(dl) {
+            }, function (dl) {
               progressMessages(dl, socket);
             });
             break;
           case 'deezer playlist':
             Playlist.addImportedPl(playlistName, url);
-            downloadSongsFromDeezer(url, function(file, infos, url) {
+            downloadSongsFromDeezer(url, function (file, infos, url) {
               addSongToPlaylist(file, infos, url, socket.request.session.passport.user, playlistName, successSongFunction);
-            }, function(dl) {
+            }, function (dl) {
               progressMessages(dl, socket);
             });
             break;
           case 'query':
-            addSongFromQuery(playlistName, url, socket.request.session.passport.user, function(success, msg) {
+            addSongFromQuery(playlistName, url, socket.request.session.passport.user, function (success, msg) {
               if (!success)
                 return socket.emit('fail', msg);
 
-              getSongs(playlistName, function(infos) {
+              getSongs(playlistName, function (infos) {
                 socket.emit('songs(' + playlistName + ')', infos);
                 socket.broadcast.emit('songs(' + playlistName + ')', infos);
               });
 
               return socket.emit('success', msg);
-            }, function(dl) {
+            }, function (dl) {
               progressMessages(dl, socket);
             });
             break;
@@ -1096,7 +1096,7 @@ module.exports = function(io, lang, similarSongsOption) {
       }
     });
 
-    socket.on('addSimilar', function(playlistName, musicId) {
+    socket.on('addSimilar', function (playlistName, musicId) {
       if (!socket.request.session.passport.user) {
         return socket.emit('fail', lang.playlist.sessionExpired);
       }
@@ -1105,25 +1105,25 @@ module.exports = function(io, lang, similarSongsOption) {
         return socket.emit('fail', lang.playlist.needToListenFirst);
       }
 
-      addSimilar(playlistName, socket.request.session.passport.user, musicId, function(success, msg) {
+      addSimilar(playlistName, socket.request.session.passport.user, musicId, function (success, msg) {
         if (!success)
           return socket.emit('fail', msg);
 
-        getSongs(playlistName, function(infos) {
+        getSongs(playlistName, function (infos) {
           socket.emit('songs(' + playlistName + ')', infos);
           socket.broadcast.emit('songs(' + playlistName + ')', infos);
         });
         return socket.emit('success', msg);
-      }, function(dl) {
+      }, function (dl) {
         progressMessages(dl, socket);
       })
     });
 
-    socket.on('removePlaylist', function(name) {
+    socket.on('removePlaylist', function (name) {
       if (!socket.request.session.passport.user)
         return socket.emit('fail', lang.playlist.sessionExpired);
 
-      removePlaylist(name, socket.request.session.passport.user, function(success, msg) {
+      removePlaylist(name, socket.request.session.passport.user, function (success, msg) {
         if (success)
           socket.emit('success', msg);
         else
@@ -1131,12 +1131,12 @@ module.exports = function(io, lang, similarSongsOption) {
       });
     });
 
-    socket.on('removeSong', function(playlistName, musicId, index) {
+    socket.on('removeSong', function (playlistName, musicId, index) {
       if (!socket.request.session.passport.user)
         return socket.emit('fail', lang.playlist.sessionExpired);
 
-      getSongs(playlistName, function(infos) {
-        removeSong(playlistName, musicId, socket.request.session.passport.user, function(success, msg) {
+      getSongs(playlistName, function (infos) {
+        removeSong(playlistName, musicId, socket.request.session.passport.user, function (success, msg) {
           if (success) {
             for (var i = 0; i < infos.length; i++) {
               if (infos[i].music_id._id == musicId)
@@ -1144,7 +1144,7 @@ module.exports = function(io, lang, similarSongsOption) {
             }
 
             var songFile = infos[i].music_id.file.split('/').pop();
-            removeQueue.push(function(next) {
+            removeQueue.push(function (next) {
               zip.removeFileFromZip(path.join(__dirname, '../public/playlists', playlistName.replace(/[^a-z0-9]/gi, '_') + '.zip'), songFile, next);
             });
             infos.splice(i, 1);
@@ -1161,11 +1161,11 @@ module.exports = function(io, lang, similarSongsOption) {
       });
     });
 
-    socket.on('editPlaylistOptions', function(playlistName, syncImportedPlaylist, autoAddSimilarSong) {
+    socket.on('editPlaylistOptions', function (playlistName, syncImportedPlaylist, autoAddSimilarSong) {
       if (!socket.request.session.passport.user)
         return socket.emit('fail', lang.playlist.sessionExpired);
 
-      editPlaylistOptions(playlistName, socket.request.session.passport.user, syncImportedPlaylist, autoAddSimilarSong, function(success, msg) {
+      editPlaylistOptions(playlistName, socket.request.session.passport.user, syncImportedPlaylist, autoAddSimilarSong, function (success, msg) {
         if (!success) {
           return socket.emit('fail', msg);
         }
@@ -1176,18 +1176,18 @@ module.exports = function(io, lang, similarSongsOption) {
       });
     });
 
-    socket.on('changeIndexes', function(playlistName, oldIndex, newIndex) {
+    socket.on('changeIndexes', function (playlistName, oldIndex, newIndex) {
       if (!socket.request.session.passport.user)
         return socket.emit('fail', lang.playlist.sessionExpired);
 
-      changeIndexes(playlistName, socket.request.session.passport.user, oldIndex, newIndex, function(success, msg) {
+      changeIndexes(playlistName, socket.request.session.passport.user, oldIndex, newIndex, function (success, msg) {
         if (!success) {
           socket.emit('fail', msg);
         } else {
           socket.emit('success', msg);
         }
 
-        getSongs(playlistName, function(infos) {
+        getSongs(playlistName, function (infos) {
           if (infos) {
             socket.emit('songs(' + playlistName + ')', infos);
             socket.broadcast.emit('songs(' + playlistName + ')', infos);
@@ -1196,10 +1196,10 @@ module.exports = function(io, lang, similarSongsOption) {
       });
     });
 
-    socket.on('resetAllWf', function() {
+    socket.on('resetAllWf', function () {
       Music.find({
         //artistName: 'Amelie Lens'
-      }).exec(function(err, res) {
+      }).exec(function (err, res) {
         if (err || res === undefined || res.length == 0)
           return;
 
@@ -1208,17 +1208,17 @@ module.exports = function(io, lang, similarSongsOption) {
           concurrency: 1
         });
 
-        res.forEach(function(elem, index) {
-          resetAllWfQueue.push(function(next) {
-            simplewaveformjs.getWaveform(elem.file, function(result) {
+        res.forEach(function (elem, index) {
+          resetAllWfQueue.push(function (next) {
+            simplewaveformjs.getWaveform(elem.file, function (result) {
               Music.update({
                 _id: elem._id
               }, {
                 waveform: result
-              }, function(err) {
+              }, function (err) {
                 if (err)
                   return console.log('Error while updating', elem.file, err);
-                console.log((index+1).toString() + '/' + res.length, 'Successfully generated waveform for', elem.file);
+                console.log((index + 1).toString() + '/' + res.length, 'Successfully generated waveform for', elem.file);
                 next();
               });
             });
@@ -1228,35 +1228,103 @@ module.exports = function(io, lang, similarSongsOption) {
     });
   });
 
-  new CronJob('*/30 * * * *', function() {
-    Playlist.getSyncedPlaylist(function(res) {
+  new CronJob('*/30 * * * *', function () {
+    Playlist.getSyncedPlaylist(function (res) {
       if (res === undefined || res.length == 0)
         return;
-      
-      var delay = 0;
+      res.forEach(function (playlist) {
+        if (playlist.syncImportedPlaylist == false)
+          return;
 
-      res.forEach(function(playlist) {
-        setTimeout(function() {
-          if (playlist.syncImportedPlaylist == true) {
-            playlist.importedPl.forEach(function(urlImportedPl, index) {
-              setTimeout(function() {
-                downloadSongs(urlImportedPl, function(file, infos, url) {
-                  Playlist.isUrlAlreadyInPlaylist(playlist.name, url, function(itIs) {
-                    if (!itIs) {
-                      addSongToPlaylist(file, infos, url, playlist.author_id, playlist.name, function(a) {
-                        console.log('[ImportedURLSyncing] Song added to ' + playlist.name + ': ' + url);
-                      });
-                    }
+        playlist.importedPl.forEach(function (urlImportedPl, index) {
+          switch (getUrlType) {
+            case 'youtube playlist':
+              ssyd.getYoutubePlaylist(urlImportedPl, function (err, res) {
+                if (err | res === undefined) {
+                  concole.log("Error when getting infos from youtube playlist: ", urlImportedPl, err);
+                  return;
+                }
+                res.forEach(function (elem, index) {
+                  var urlYt = ssyd.sanitizeUrl('https://www.youtube.com/watch?v=' + elem.contentDetails.videoId);
+                  Playlist.isUrlAlreadyInPlaylist(playlist.name, urlYt, function (itIs) {
+                    if (itIs)
+                      return;
+
+                    addSongFromYoutube(playlist.name, urlYt, playlist.author_id, function () {
+                      console.log('[ImportedURLSyncing] Song added to ' + playlist.name + ': ' + urlYt);
+                    }, function () {
+
+                    });
                   });
-                }, function(a) {
-
                 });
-              }, index * 100);
-            });
+              });
+              break;
+            case 'soundcloud playlist':
+              ssyd.getSoundcloudPlaylist(urlImportedPl, function (err, res) {
+                if (err | res === undefined) {
+                  concole.log("Error when getting infos from soundcloud playlist: ", urlImportedPl, err);
+                  return;
+                }
+                res.forEach(function (elem, index) {
+                  var urlSc = ssyd.sanitizeUrl(elem.permlink_url);
+                  Playlist.isUrlAlreadyInPlaylist(playlist.name, urlSc, function (itIs) {
+                    if (itIs)
+                      return;
+
+                    addSongFromSoundcloud(playlist.name, urlSc, playlist.author_id, function () {
+                      console.log('[ImportedURLSyncing] Song added to ' + playlist.name + ': ' + urlSc);
+                    }, function () {
+
+                    });
+                  });
+                });
+              });
+              break;
+            case 'deezer playlist':
+              ssyd.getDeezerPlaylist(urlImportedPl, function (err, res) {
+                if (err | res === undefined) {
+                  concole.log("Error when getting infos from deezer playlist: ", urlImportedPl, err);
+                  return;
+                }
+                res.forEach(function (elem, index) {
+                  var urlDz = ssyd.sanitizeUrl('https://www.youtube.com/watch?v=' + res.youtubeRes.id.videoId);
+                  Playlist.isUrlAlreadyInPlaylist(playlist.name, urlDz, function (itIs) {
+                    if (itIs)
+                      return;
+
+                    addSongFromSoundcloud(playlist.name, urlDz, playlist.author_id, function () {
+                      console.log('[ImportedURLSyncing] Song added to ' + playlist.name + ': ' + urlDz);
+                    }, function () {
+
+                    });
+                  });
+                });
+              });
+              break;
+            case 'spotify playlist':
+              ssyd.getSpotifyPlaylist(urlImportedPl, function (err, res) {
+                if (err | res === undefined) {
+                  concole.log("Error when getting infos from spotify playlist: ", urlImportedPl, err);
+                  return;
+                }
+                res.forEach(function (elem, index) {
+                  var urlSf = ssyd.sanitizeUrl('https://www.youtube.com/watch?v=' + res.youtubeRes.id.videoId);
+                  Playlist.isUrlAlreadyInPlaylist(playlist.name, urlSf, function (itIs) {
+                    if (itIs)
+                      return;
+
+                    addSongFromSoundcloud(playlist.name, urlSf, playlist.author_id, function () {
+                      console.log('[ImportedURLSyncing] Song added to ' + playlist.name + ': ' + urlSf);
+                    }, function () {
+
+                    });
+                  });
+                });
+              });
+              break;
           }
-        }, delay);
-        delay+= playlist.musics.length * 100;
+        });
       });
     });
   }, null, true, 'Europe/Paris');
-};
+}
