@@ -1232,23 +1232,30 @@ module.exports = function(io, lang, similarSongsOption) {
     Playlist.getSyncedPlaylist(function(res) {
       if (res === undefined || res.length == 0)
         return;
+      
+      var delay = 0;
 
       res.forEach(function(playlist) {
-        if (playlist.syncImportedPlaylist == true) {
-          playlist.importedPl.forEach(function(urlImportedPl) {
-            downloadSongs(urlImportedPl, function(file, infos, url) {
-              Playlist.isUrlAlreadyInPlaylist(playlist.name, url, function(itIs) {
-                if (!itIs) {
-                  addSongToPlaylist(file, infos, url, playlist.author_id, playlist.name, function(a) {
-                    console.log('[ImportedURLSyncing] Song added to ' + playlist.name + ': ' + url);
+        setTimeout(function() {
+          if (playlist.syncImportedPlaylist == true) {
+            playlist.importedPl.forEach(function(urlImportedPl, index) {
+              setTimeout(function() {
+                downloadSongs(urlImportedPl, function(file, infos, url) {
+                  Playlist.isUrlAlreadyInPlaylist(playlist.name, url, function(itIs) {
+                    if (!itIs) {
+                      addSongToPlaylist(file, infos, url, playlist.author_id, playlist.name, function(a) {
+                        console.log('[ImportedURLSyncing] Song added to ' + playlist.name + ': ' + url);
+                      });
+                    }
                   });
-                }
-              });
-            }, function(a) {
+                }, function(a) {
 
+                });
+              }, index * 100);
             });
-          });
-        }
+          }
+        }, delay);
+        delay+= playlist.musics.length * 100;
       });
     });
   }, null, true, 'Europe/Paris');
