@@ -1237,7 +1237,7 @@ module.exports = function (io, lang, similarSongsOption) {
           return;
 
         playlist.importedPl.forEach(function (urlImportedPl, index) {
-          switch (getUrlType) {
+          switch (getUrlType(urlImportedPl)) {
             case 'youtube playlist':
               ssyd.getYoutubePlaylist(urlImportedPl, function (err, res) {
                 if (err | res === undefined) {
