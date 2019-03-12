@@ -1266,7 +1266,7 @@ module.exports = function (io, lang, similarSongsOption) {
                   return;
                 }
                 res.forEach(function (elem, index) {
-                  var urlSc = ssyd.sanitizeUrl(elem.permlink_url);
+                  var urlSc = ssyd.sanitizeUrl(elem.permalink_url);
                   Playlist.isUrlAlreadyInPlaylist(playlist.name, urlSc, function (itIs) {
                     if (itIs)
                       return;
