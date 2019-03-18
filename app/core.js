@@ -1240,7 +1240,7 @@ module.exports = function (io, lang, similarSongsOption) {
           switch (getUrlType(urlImportedPl)) {
             case 'youtube playlist':
               ssyd.getYoutubePlaylist(urlImportedPl, function (err, res) {
-                if (err | res === undefined) {
+                if (err || res === undefined) {
                   console.log("Error when getting infos from youtube playlist: ", urlImportedPl, err);
                   return;
                 }
@@ -1261,7 +1261,7 @@ module.exports = function (io, lang, similarSongsOption) {
               break;
             case 'soundcloud playlist':
               ssyd.getSoundcloudPlaylist(urlImportedPl, function (err, res) {
-                if (err | res === undefined) {
+                if (err || res === undefined) {
                   console.log("Error when getting infos from soundcloud playlist: ", urlImportedPl, err);
                   return;
                 }
@@ -1282,7 +1282,7 @@ module.exports = function (io, lang, similarSongsOption) {
               break;
             case 'deezer playlist':
               ssyd.getDeezerPlaylist(urlImportedPl, function (err, res) {
-                if (err | res === undefined) {
+                if (err || res === undefined) {
                   console.log("Error when getting infos from deezer playlist: ", urlImportedPl, err);
                   return;
                 }
@@ -1303,7 +1303,7 @@ module.exports = function (io, lang, similarSongsOption) {
               break;
             case 'spotify playlist':
               ssyd.getSpotifyPlaylist(urlImportedPl, function (err, res) {
-                if (err | res === undefined) {
+                if (err || res === undefined) {
                   console.log("Error when getting infos from spotify playlist: ", urlImportedPl, err);
                   return;
                 }
