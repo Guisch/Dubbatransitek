@@ -1241,7 +1241,7 @@ module.exports = function (io, lang, similarSongsOption) {
             case 'youtube playlist':
               ssyd.getYoutubePlaylist(urlImportedPl, function (err, res) {
                 if (err | res === undefined) {
-                  concole.log("Error when getting infos from youtube playlist: ", urlImportedPl, err);
+                  console.log("Error when getting infos from youtube playlist: ", urlImportedPl, err);
                   return;
                 }
                 res.forEach(function (elem, index) {
@@ -1262,7 +1262,7 @@ module.exports = function (io, lang, similarSongsOption) {
             case 'soundcloud playlist':
               ssyd.getSoundcloudPlaylist(urlImportedPl, function (err, res) {
                 if (err | res === undefined) {
-                  concole.log("Error when getting infos from soundcloud playlist: ", urlImportedPl, err);
+                  console.log("Error when getting infos from soundcloud playlist: ", urlImportedPl, err);
                   return;
                 }
                 res.forEach(function (elem, index) {
@@ -1283,7 +1283,7 @@ module.exports = function (io, lang, similarSongsOption) {
             case 'deezer playlist':
               ssyd.getDeezerPlaylist(urlImportedPl, function (err, res) {
                 if (err | res === undefined) {
-                  concole.log("Error when getting infos from deezer playlist: ", urlImportedPl, err);
+                  console.log("Error when getting infos from deezer playlist: ", urlImportedPl, err);
                   return;
                 }
                 res.forEach(function (elem, index) {
@@ -1304,7 +1304,7 @@ module.exports = function (io, lang, similarSongsOption) {
             case 'spotify playlist':
               ssyd.getSpotifyPlaylist(urlImportedPl, function (err, res) {
                 if (err | res === undefined) {
-                  concole.log("Error when getting infos from spotify playlist: ", urlImportedPl, err);
+                  console.log("Error when getting infos from spotify playlist: ", urlImportedPl, err);
                   return;
                 }
                 res.forEach(function (elem, index) {
