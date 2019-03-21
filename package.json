@@ -1,29 +1,49 @@
 {
-  "name": "Dubbatransitek",
+  "name": "dubbatransitek",
+  "version": "0.0.5",
+  "description": "collaborative music plateform",
   "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Guisch/Dubbatransitek.git"
+  },
+  "keywords": [
+    "music"
+  ],
+  "author": "Guisch",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Guisch/Dubbatransitek/issues"
+  },
+  "homepage": "https://github.com/Guisch/Dubbatransitek#readme",
   "dependencies": {
-    "alltomp3": "git+https://github.com/Guisch/alltomp3",
-    "bcrypt-nodejs": "latest",
-    "body-parser": "~1.15.2",
-    "connect-flash": "~0.1.1",
-    "connect-mongo": "^1.3.2",
-    "cookie-parser": "~1.4.3",
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.18.2",
+    "connect-flash": "^0.1.1",
+    "connect-mongo": "^2.0.1",
+    "cookie-parser": "^1.4.3",
     "cron": "^1.3.0",
-    "ejs": "~2.5.2",
-    "express": "~4.14.0",
-    "express-session": "~1.14.1",
-    "method-override": "~2.3.6",
-    "mongoose": "~4.6.1",
-    "morgan": "~1.7.0",
-    "node-zip": "^1.1.1",
-    "passport": "~0.3.2",
+    "ejs": "^2.6.1",
+    "express": "^4.16.3",
+    "express-session": "^1.15.6",
+    "method-override": "^2.3.10",
+    "mongoose": "^5.2.7",
+    "morgan": "^1.9.0",
+    "passport": "^0.4.0",
     "passport-deezer": "^0.2.0",
-    "passport-local": "~1.0.0",
+    "passport-local": "^1.0.0",
     "passport-soundcloud": "^0.2.0",
-    "passport-spotify": "^0.3.1",
+    "passport-spotify": "^1.0.0",
     "passport-youtube-v3": "^2.1.0",
-    "queue": "^4.4.1",
+    "queue": "^4.4.2",
     "similar-songs": "^0.1.3",
-    "socket.io": "^2.0.3"
+    "simplewaveformjs": "git+https://github.com/Guisch/simpleWaveformJs.git",
+    "socket.io": "^2.1.1",
+    "ssydtomp3": "git+https://github.com/Guisch/ssydtomp3.git",
+    "systemzipjs": "git+https://github.com/Guisch/systemZipJs.git"
   }
 }

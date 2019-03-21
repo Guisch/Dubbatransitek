@@ -41,23 +41,25 @@
 <footer>
   <% include ../partials/notifJS %>
     <script>
+      var myPlaylists;
+
       socket.on('myPlaylists', function(playlists) {
+        myPlaylists = playlists;
         $("#myPlaylists").empty();
 
-        //TODO: Vérifier après un add
         for (var i = 0; i < playlists.length; i += 6) {
           var html = "<div class='row' id='myPlaylist" + i.toString() + "'>";
           for (var j = i; j < i + 6; j++) {
             if (j < playlists.length) {
-              html += "<a href='./musics?name=" + encodeURI(playlists[j].name) + "' class='col-sm-2 col-xs-12'>";
-              if (playlists[j].musics.length > 0 && playlists[j].musics[0].infos.cover)
-                html += '<img class="thumb" src="' + playlists[j].musics[0].infos.cover + '">';
-              if (playlists[j].musics.length > 1 && playlists[j].musics[1].infos.cover)
-                html += '<img class="thumb" src="' + playlists[j].musics[1].infos.cover + '">';
-              if (playlists[j].musics.length > 2 && playlists[j].musics[2].infos.cover)
-                html += '<img class="thumb" src="' + playlists[j].musics[2].infos.cover + '">';
-              if (playlists[j].musics.length > 3 && playlists[j].musics[3].infos.cover)
-                html += '<img class="thumb" src="' + playlists[j].musics[3].infos.cover + '">';
+              html += "<a href='./playlist?name=" + encodeURI(playlists[j].name) + "' class='col-sm-2 col-xs-6'>";
+              if (playlists[j].musics.length > 0 && playlists[j].musics[0].music_id.cover)
+                html += '<img class="thumb" src="' + playlists[j].musics[0].music_id.cover + '">';
+              if (playlists[j].musics.length > 1 && playlists[j].musics[1].music_id.cover)
+                html += '<img class="thumb" src="' + playlists[j].musics[1].music_id.cover + '">';
+              if (playlists[j].musics.length > 2 && playlists[j].musics[2].music_id.cover)
+                html += '<img class="thumb" src="' + playlists[j].musics[2].music_id.cover + '">';
+              if (playlists[j].musics.length > 3 && playlists[j].musics[3].music_id.cover)
+                html += '<img class="thumb" src="' + playlists[j].musics[3].music_id.cover + '">';
               html += '<h3 class="text-center">' + playlists[j].name + '</h3>';
               html += "</a>";
             }

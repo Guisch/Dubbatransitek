@@ -1,36 +1,41 @@
 <!doctype html>
 <html>
-    <head>
-        <title>Dubbatransitek</title>
-        <% include ../partials/head %>
-    </head>
-    <body>
-        <div class="container">
 
-            <div class="jumbotron text-center">
-                <h1>
+<head>
+  <title>Dubbatransitek</title>
+  <% include ../partials/head %>
+</head>
+
+<body>
+  <div class="container">
+
+    <div class="jumbotron text-center">
+      <h1>
                     <span class="fa fa-lock"></span>
                     <%= lang.pages.connection %></h1>
 
-                <p><%= lang.pages.chooseYouConnectionMode %></p>
+      <p>
+        <%= lang.pages.chooseYouConnectionMode %>
+      </p>
 
-                <a href="/login" class="btn btn-default">
+      <a href="/login" class="btn btn-default">
                     <span class="fa fa-user"></span>
                     <%= lang.pages.connection %></a>
-                <a href="/signup" class="btn btn-default">
+      <a href="/signup" class="btn btn-default">
                     <span class="fa fa-user"></span>
                     <%= lang.pages.signUp %></a>
-                <a href="/auth/spotify" class="btn btn-success">
+      <a href="/auth/spotify" class="btn btn-success">
                     <span class="fa fa-spotify"></span>
                     Spotify</a>
-                <a href="/auth/youtube" class="btn btn-danger">
+      <a href="/auth/youtube" class="btn btn-danger">
                     <span class="fa fa-youtube"></span>
                     Youtube</a>
-                <a href="/auth/deezer" class="btn btn-primary">
+      <a href="/auth/deezer" class="btn btn-primary">
                     <span class="fa fa-align-left fa-fw fa-rotate-270"></span>
                     Deezer</a>
-            </div>
+    </div>
 
-        </div>
-    </body>
+  </div>
+</body>
+
 </html>

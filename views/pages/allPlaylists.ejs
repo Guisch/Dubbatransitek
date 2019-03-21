@@ -4,7 +4,7 @@
 <head>
   <title>Dubbatransitek</title>
   <% include ../partials/head %>
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.css" />
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css" />
 </head>
 
 <body>
@@ -19,27 +19,50 @@
       <table id="myTable" class="display" cellspacing="0" width="100%">
         <thead>
           <tr>
-            <th><%= lang.pages.name %></th>
-            <th><%= lang.pages.tagTitle %></th>
-            <th><%= lang.pages.author %></th>
-            <th><%= lang.pages.contributor %></th>
-            <th><%= lang.pages.musicNb %></th>
-            <th><%= lang.pages.go %></th>
+            <th>
+              <%= lang.pages.thumbnail %>
+            </th>
+            <th>
+              <%= lang.pages.name %>
+            </th>
+            <th>
+              <%= lang.pages.tagTitle %>
+            </th>
+            <th>
+              <%= lang.pages.author %>
+            </th>
+            <th>
+              <%= lang.pages.contributor %>
+            </th>
+            <th>
+              <%= lang.pages.musicNb %>
+            </th>
           </tr>
         </thead>
 
         <tfoot>
           <tr>
-            <th><%= lang.pages.name %></th>
-            <th><%= lang.pages.tagTitle %></th>
-            <th><%= lang.pages.author %></th>
-            <th><%= lang.pages.contributor %></th>
-            <th><%= lang.pages.musicNb %></th>
-            <th><%= lang.pages.go %></th>
+            <th>
+              <%= lang.pages.thumbnail %>
+            </th>
+            <th>
+              <%= lang.pages.name %>
+            </th>
+            <th>
+              <%= lang.pages.tagTitle %>
+            </th>
+            <th>
+              <%= lang.pages.author %>
+            </th>
+            <th>
+              <%= lang.pages.contributor %>
+            </th>
+            <th>
+              <%= lang.pages.musicNb %>
+            </th>
           </tr>
         </tfoot>
         <tbody id="myTableBody">
-
         </tbody>
       </table>
     </div>
@@ -47,23 +70,46 @@
 </body>
 <footer>
   <% include ../partials/notifJS %>
-    <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.js"></script>
+    <script type="text/javascript" src="//cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.js"></script>
     <script>
-      socket.emit('getAllPlaylists');
+      var allPlaylists;
+      var table;
       socket.on('allPlaylists', function(playlists) {
+        $('#myTableBody').empty();
+        allPlaylists = playlists;
         for (var i = 0; i < playlists.length; i++) {
-          var html = "<tr><td>" + playlists[i].name + "</td>";
+          var html = "<tr><td>";
+          if (playlists[i].musics.length > 0 && playlists[i].musics[0].music_id.cover)
+            html += '<img class="thumb2" src="' + playlists[i].musics[0].music_id.cover + '">';
+          if (playlists[i].musics.length > 1 && playlists[i].musics[1].music_id.cover)
+            html += '<img class="thumb2" src="' + playlists[i].musics[1].music_id.cover + '">';
+          if (playlists[i].musics.length > 2 && playlists[i].musics[2].music_id.cover)
+            html += '<img class="thumb2" src="' + playlists[i].musics[2].music_id.cover + '">';
+          if (playlists[i].musics.length > 3 && playlists[i].musics[3].music_id.cover)
+            html += '<img class="thumb2" src="' + playlists[i].musics[3].music_id.cover + '">';
+          html += "</td><td><a href='./playlist?name=" + encodeURI(playlists[i].name) + "'>" + playlists[i].name + "</a></td>";
           html += "<td>" + playlists[i].tag.join(", ") + "</td>";
-          html += "<td>" + playlists[i].author_id + "</td>";
-          html += "<td>" + playlists[i].contributor_id.join(',') + "</td>";
-          html += "<td>" + playlists[i].musics.length + "</td>";
-          html += "<td><a class='btn btn-default' href='./musics?name=" + encodeURI(playlists[i].name) + "'><%= lang.pages.go %></a></td></tr>";
+          html += "<td>" + ((playlists[i].author_id.local ? playlists[i].author_id.local.username : false) || (playlists[i].author_id.spotify ? playlists[i].author_id.spotify.username : false) || (playlists[i].author_id.deezer ? playlists[i].author_id
+            .deezer.username : false) || (playlists[i].author_id.youtube ? playlists[i].author_id.youtube.displayName : false)) + "</td>";
+          html += "<td>";
+          var contributors = [];
+          for (var j = 0; j < playlists[i].musics.length; j++) {
+            var c = ((playlists[i].musics[j].contributor_id.local ? playlists[i].musics[j].contributor_id.local.username : false) || (playlists[i].musics[j].contributor_id.spotify ? playlists[i].musics[j].contributor_id.spotify.username : false) ||
+              (playlists[i].musics.contributor_id[
+                j].deezer ? playlists[i].musics[j].contributor_id.deezer.username : false) || (playlists[i].musics[j].contributor_id.youtube ? playlists[i].musics[j].contributor_id.youtube.displayName : false));
+            if (contributors.indexOf(c) === -1) contributors.push(c);
+          }
+          html += contributors.join(', ');
+          html += "</td>";
+          html += "<td>" + playlists[i].musics.length + "</td></tr>";
 
           $('#myTableBody').append(html);
         }
 
-        $('#myTable').DataTable();
+        table = $('#myTable').DataTable();
       });
+
+      socket.emit('getAllPlaylists');
     </script>
 </footer>
 

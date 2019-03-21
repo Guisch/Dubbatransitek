@@ -1,0 +1,189 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>Dubbatransitek</title>
+  <% include ../partials/head %>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.css" />
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <% include ../partials/header %>
+    </header>
+
+    <div class="musicSticky">
+      <div class="row whiteBg">
+        <h1 class="text-center"><%= name %></h1>
+        <h4 class="text-center" id="currentTitle"> </h4>
+      </div>
+      <!-- DISPLAY MUSICS -->
+      <div class="row whiteBg">
+        <div class="col-md-6 col-xs-12 text-center">
+          <button id="playpause" class="btn btn-primary">
+                        <i class="fa fa-play" aria-hidden="true"></i>
+                        <%= lang.pages.playPause %></button>
+        </div>
+        <div class="col-md-6 col-xs-12 text-center hidden-xs">
+          <input id="vol" data-slider-id='volSlider' type="text" />
+        </div>
+      </div>
+      <div class="row col-md-12 whiteGradient">
+        <div id="waveform1"></div>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Titre -->
+      <div class="form-group row">
+        <label for="example-text-input" class="col-md-3 col-form-label"><%= lang.pages.title %></label>
+        <div class="col-md-3">
+          <input class="form-control" type="text" value="" id="title">
+        </div>
+        <!-- Artistname -->
+        <label for="example-text-input" class="col-md-3 col-form-label"><%= lang.pages.artistName %></label>
+        <div class="col-md-3">
+          <input class="form-control" type="text" value="" id="artistName">
+        </div>
+      </div>
+      <!-- deezerId -->
+      <div class="form-group row">
+        <label for="example-number-input" class="col-md-3 col-form-label"><%= lang.pages.deezerId %></label>
+        <div class="col-md-3">
+          <input class="form-control" type="number" value="" id="deezerId">
+        </div>
+        <!-- ituneId -->
+        <label for="example-number-input" class="col-md-3 col-form-label"><%= lang.pages.ituneId %></label>
+        <div class="col-md-3">
+          <input class="form-control" type="number" value="" id="ituneId">
+        </div>
+      </div>
+      <!-- Position -->
+      <div class="form-group row">
+        <label for="example-number-input" class="col-md-3 col-form-label"><%= lang.pages.position %></label>
+        <div class="col-md-3">
+          <input class="form-control" type="number" value="" id="position">
+        </div>
+        <!-- Duration -->
+        <label for="example-number-input" class="col-md-3 col-form-label"><%= lang.pages.duration %></label>
+        <div class="col-md-3">
+          <input class="form-control" type="number" value="" id="duration">
+        </div>
+      </div>
+      <!-- deezerAlbum -->
+      <div class="form-group row">
+        <label for="example-number-input" class="col-md-3 col-form-label"><%= lang.pages.deezerAlbum %></label>
+        <div class="col-md-3">
+          <input class="form-control" type="number" value="" id="deezerAlbum">
+        </div>
+        <!-- discNumber -->
+        <label for="example-number-input" class="col-md-3 col-form-label"><%= lang.pages.discNumber %></label>
+        <div class="col-md-3">
+          <input class="form-control" type="number" value="" id="discNumber">
+        </div>
+      </div>
+      <!-- album -->
+      <div class="form-group row">
+        <label for="example-text-input" class="col-md-3 col-form-label"><%= lang.pages.album %></label>
+        <div class="col-md-3">
+          <input class="form-control" type="text" value="" id="album">
+        </div>
+        <!-- releaseDate -->
+        <label for="example-date-input" class="col-md-3 col-form-label"><%= lang.pages.releaseDate %></label>
+        <div class="col-md-3">
+          <input class="form-control" type="date" value="" id="releaseDate">
+        </div>
+      </div>
+      <!-- nbTracks -->
+      <div class="form-group row">
+        <label for="example-number-input" class="col-md-3 col-form-label"><%= lang.pages.nbTracks %></label>
+        <div class="col-md-3">
+          <input class="form-control" type="number" value="" id="nbTracks">
+        </div>
+        <!-- genreId -->
+        <label for="example-number-input" class="col-md-3 col-form-label"><%= lang.pages.genreId %></label>
+        <div class="col-md-3">
+          <input class="form-control" type="number" value="" id="genreId">
+        </div>
+      </div>
+      <!-- cover -->
+      <div class="form-group row">
+        <label for="example-url-input" class="col-md-3 col-form-label"><%= lang.pages.cover %></label>
+        <div class="col-md-3">
+          <input class="form-control" type="url" value="" id="cover">
+        </div>
+        <!-- genre -->
+        <label for="example-text-input" class="col-md-3 col-form-label"><%= lang.pages.genre %></label>
+        <div class="col-md-3">
+          <input class="form-control" type="text" value="" id="genre">
+        </div>
+      </div>
+    </div>
+
+    <!-- DISPLAY PLAYLISTS -->
+    <div class="row">
+      <h1><%= lang.pages.appearOn %></h1>
+      <table id="myTable" class="display" cellspacing="0" width="100%">
+        <thead>
+          <tr>
+            <th>
+              <%= lang.pages.name %>
+            </th>
+            <th>
+              <%= lang.pages.tagTitle %>
+            </th>
+            <th>
+              <%= lang.pages.author %>
+            </th>
+            <th>
+              <%= lang.pages.contributor %>
+            </th>
+            <th>
+              <%= lang.pages.musicNb %>
+            </th>
+            <th>
+              <%= lang.pages.go %>
+            </th>
+          </tr>
+        </thead>
+
+        <tfoot>
+          <tr>
+            <th>
+              <%= lang.pages.name %>
+            </th>
+            <th>
+              <%= lang.pages.tagTitle %>
+            </th>
+            <th>
+              <%= lang.pages.author %>
+            </th>
+            <th>
+              <%= lang.pages.contributor %>
+            </th>
+            <th>
+              <%= lang.pages.musicNb %>
+            </th>
+            <th>
+              <%= lang.pages.go %>
+            </th>
+          </tr>
+        </tfoot>
+        <tbody id="myTableBody">
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+<footer>
+  <% include ../partials/notifJS %>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/2.0.6/wavesurfer.min.js" integrity="sha256-mZrPKkWr22NunmKlLknHHhzzbUTlxkZwPU8pM/MnB9A=" crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/bootstrap-slider.min.js" integrity="sha256-ssw743RfM8cbNhwou26tmmPhiNhq3buUbRG/RevtfG4=" crossorigin="anonymous"></script>
+    <script>
+      
+    </script>
+</footer>
+
+</html>

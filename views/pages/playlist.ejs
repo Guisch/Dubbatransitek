@@ -1,0 +1,660 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>Dubbatransitek</title>
+  <% include ../partials/head %>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <% include ../partials/header %>
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/css/bootstrap-slider.min.css" integrity="sha256-WfuSLYdzGvlsFU6ImYYSE277WsjfyU30QeGuNIjeJEI=" crossorigin="anonymous" />
+    </header>
+
+    <div class="row musicSticky">
+      <div class="row whiteBg">
+        <h1 class="text-center"><%= name %></h1>
+        <h4 class="text-center" id="currentTitle">.</h4>
+        <h5 class="text-center" id="nextMusic">.</h5>
+      </div>
+      <!-- DISPLAY MUSICS -->
+      <div class="row whiteBg">
+        <div class="col-md-2 col-xs-6 text-center">
+          <button id="previous" class="btn btn-primary">
+                        <i class="fa fa-step-backward" aria-hidden="true"></i>
+                        <%= lang.pages.previous %></button>
+        </div>
+        <div class="col-md-2 col-xs-6 text-center">
+          <button id="playpause" class="btn btn-primary">
+                        <i class="fa fa-play" aria-hidden="true"></i>
+                        <%= lang.pages.playPause %></button>
+        </div>
+        <div class="col-md-4 col-xs-12 text-center hidden-xs">
+          <input id="vol" data-slider-id='volSlider' type="text" />
+        </div>
+        <div class="col-md-2 col-xs-6 text-center">
+          <button id="random" class="btn btn-primary">
+                        <i class="fa fa-random" aria-hidden="true"></i>
+                        <%= lang.pages.random %></button>
+        </div>
+        <div class="col-md-2 col-xs-6 text-center">
+          <button id="next" class="btn btn-primary">
+                        <i class="fa fa-step-forward" aria-hidden="true"></i>
+                        <%= lang.pages.next %></button>
+        </div>
+
+      </div>
+      <div class="row col-md-12 whiteGradient">
+        <div id="waveform1"></div>
+        <div id="waveform2"></div>
+      </div>
+    </div>
+    <div class="row col-md-12">
+      <div class="list-group" id="songs"></div>
+    </div>
+    <!-- ADD MUSIC -->
+    <div class="row">
+      <div class="col-md-6">
+        <form id="add">
+          <h1><%= lang.pages.addMusic %></h1>
+          <div class="form-group">
+            <label><%= lang.pages.URLorQuery %></label>
+            <input class="form-control" name="url" id="url" placeholder="<%= lang.pages.URLorQueryPlaceholder %>" required/>
+          </div>
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary"><%= lang.pages.add %></button>
+          </div>
+        </form>
+      </div>
+      <div class="col-md-6">
+        <h1><%= lang.pages.addSimilar %></h1>
+        <div class="form-group">
+          <button class="btn btn-primary" id="addSimilar"><%= lang.pages.add %></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- DOWNLOAD MUSICS -->
+      <div class="col-md-6">
+        <h1><%= lang.pages.downloadPlaylist %></h1>
+        <div class="form-group">
+          <button id="download" class="btn btn-primary"><%= lang.pages.download %></button>
+        </div>
+      </div>
+
+      <!-- REMOVE PLAYLIST -->
+      <div class="col-md-6">
+        <h1><%= lang.pages.deletePlaylist %></h1>
+        <div class="form-group">
+          <button id="del" class="btn btn-primary"><%= lang.pages.delete %></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <h1><%= lang.pages.syncImportedPlaylist %></h1>
+        <div class="btn-group" data-toggle="buttons">
+          <label class="btn btn-default">
+              <input type="radio" id="sIPOn" name="syncImportedPlaylist" value="on" autocomplete="off"> <%= lang.pages.on %>
+            </label>
+          <label class="btn btn-default">
+              <input type="radio" id="sIPOff"  name="syncImportedPlaylist" value="off" autocomplete="off"> <%= lang.pages.off %>
+            </label>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <h1><%= lang.pages.autoAddSimilarSong %></h1>
+        <div class="btn-group" data-toggle="buttons">
+          <label class="btn btn-default">
+              <input type="radio" id="aASSOn"  name="autoAddSimilarSong" value="on" autocomplete="off"> <%= lang.pages.on %>
+            </label>
+          <label class="btn btn-default">
+              <input type="radio" id="aASSOff"  name="autoAddSimilarSong" value="off" autocomplete="off"> <%= lang.pages.off %>
+            </label>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+<footer>
+  <% include ../partials/notifJS %>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/2.0.6/wavesurfer.min.js" integrity="sha256-mZrPKkWr22NunmKlLknHHhzzbUTlxkZwPU8pM/MnB9A=" crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/bootstrap-slider.min.js" integrity="sha256-ssw743RfM8cbNhwou26tmmPhiNhq3buUbRG/RevtfG4=" crossorigin="anonymous"></script>
+    <script src="//cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <script>
+      var songsList = [];
+      var wavesurfer1;
+      var wavesurfer2;
+      var currentSong;
+      var fadeTime = 10;
+      var previousSong;
+      var nextSong = 1;
+      var fc1 = true;
+      var fc2 = true;
+      var masterVol = 1;
+      var sortableList;
+      var syncImportedPlaylist;
+      var autoAddSimilarSong;
+      var random = false;
+      var loadSong = false;
+
+      if (sessionStorage.getItem('masterVol') != null)
+        masterVol = sessionStorage.getItem('masterVol');
+
+      socket.emit('getSongs', '<%= name %>');
+
+      socket.emit('getPlaylistInfo', '<%= name %>');
+
+      socket.on('songs(<%= name %>)', function(infos, songRemoved, currentSongId, userId) {
+        songsList = infos.slice(0);
+
+        if (currentSongId !== undefined) {
+          for (var i = 0; i < songsList.length; i++) {
+            if (songsList[i]._id == currentSongId) {
+              currentSong = i;
+              loadeNextWave((currentSong + nextSong) % songsList.length);
+              break;
+            }
+          }
+        }
+
+        // If a song is removed
+        if (songRemoved !== undefined && songsList.length != 0) {
+          if (songRemoved == currentSong)
+            loadWave(songRemoved);
+          if (songRemoved == (currentSong + nextSong) % songsList.length)
+            loadNextWave((currentSong + nextSong) % songsList.length);
+          if (songRemoved < currentSong)
+            currentSong--;
+        }
+
+        $("#songs").empty();
+
+        // Display song list
+        var html = '';
+
+        for (var i = 0; i < songsList.length; i++) {
+          html += '<div id="song' + i.toString() + '" class="list-group-item cursorP' + (currentSong == i ? ' active ' : ' ') + 'row no-margin">';
+          html += '<div class="col-md-9" onClick="loadWave(' + i.toString() + ')">';
+          html += '<div class="float-left">';
+          html += '<i class="fa fa-arrows-v marginright-15 cursorR"></i>';
+
+          if (songsList[i].music_id.cover)
+            html += '<img class="miniature" src="' + songsList[i].music_id.cover + '">';
+
+          html += '</div>';
+          html += '<div class="margintop-15">' + songsList[i].music_id.title + ' - ' + songsList[i].music_id.artistName + '</div>';
+          html += '</div><div class="col-md-3 hidden-xs">';
+          if (songsList[i].music_id.playCounter !== undefined)
+            html += '<span>' + songsList[i].music_id.playCounter[userId] === undefined ? '0' : songsList[i].music_id.playCounter[userId] + '</span>';
+          else
+            html += '<span>0</span>';
+          html += '<a class="link btn btn-info" href="./music?id=' + encodeURI(songsList[i].music_id._id) + '"><i class="fa fa-pencil" aria-hidden="true"></i></a>';
+          html += '<button class="link btn btn-danger" onClick="deleteSong(' + i.toString() + ')"><i class="fa fa-trash" aria-hidden="true"></i></button>';
+          html += '<a class="link btn btn-primary" target="_blank" href="' + songsList[i].music_id.file + '"><i class="fa fa-download" aria-hidden="true"></i></a>';
+          html += '<a class="link btn btn-default" target="_blank" href="' + songsList[i].music_id.url + '"><i class="fa fa-link" aria-hidden="true"></i></a>';
+          html += '</div></div>';
+        }
+
+        $("#songs").append(html);
+
+        // Load the last song added to the next wave
+        if (currentSong == songsList.length - 2)
+          loadNextWave(songsList[songsList.length - 1].music_id.file);
+
+        // Sortable List
+        sortableList = Sortable.create($('#songs')[0], {
+          handle: '.fa-arrows-v',
+          animation: 150,
+          onEnd: function(ev) {
+            if (ev.oldIndex != ev.newIndex)
+              socket.emit('changeIndexes', '<%= name %>', ev.oldIndex, ev.newIndex, songsList[currentSong]._id);
+          }
+        });
+
+        if (loadSong) {
+          loadWave(parseInt((new URL(window.location.href)).searchParams.get("play")));
+          loadSong = false;
+        }
+      });
+
+      socket.on('downloadReady', function() {
+        window.location.replace('./public/playlists/<%= name.replace(/[^a-z0-9]/gi, '_') %>.zip');
+      });
+
+      socket.on('playlistInfo(<%= name %>)', function(opt1, opt2) {
+        syncImportedPlaylist = opt1;
+        $('input[name=syncImportedPlaylist]')[syncImportedPlaylist ? 0 : 1].checked = syncImportedPlaylist;
+        $($('input[name=syncImportedPlaylist]')[syncImportedPlaylist ? 0 : 1]).parent().removeClass('btn-default').addClass('btn-primary');
+        $($('input[name=syncImportedPlaylist]')[syncImportedPlaylist ? 1 : 0]).parent().removeClass('btn-primary').addClass('btn-default');
+
+        autoAddSimilarSong = opt2;
+        $('input[name=autoAddSimilarSong]')[autoAddSimilarSong ? 0 : 1].checked = autoAddSimilarSong;
+        $($('input[name=autoAddSimilarSong]')[autoAddSimilarSong ? 0 : 1]).parent().removeClass('btn-default').addClass('btn-primary');
+        $($('input[name=autoAddSimilarSong]')[autoAddSimilarSong ? 1 : 0]).parent().removeClass('btn-primary').addClass('btn-default');
+      });
+
+      socket.on('waveform', function(isWs1, peak) {
+        if (isWs1) {
+          wavesurfer1.backend.setPeaks(peak);
+          wavesurfer1.drawBuffer();
+        } else {
+          wavesurfer2.backend.setPeaks(peak);
+          wavesurfer2.drawBuffer();
+        }
+      });
+
+      function loadNextWave(s) {
+        if ($('#waveform1').css('opacity') != 0) {
+          wavesurfer2.empty();
+          //wavesurfer2.load(songsList[s].music_id.file, songsList[s].music_id.waveform);
+          load2(songsList[s].music_id.file, songsList[s].music_id._id);
+          wavesurfer2.isReady = false;
+        }
+        if ($('#waveform2').css('opacity') != 0) {
+          wavesurfer1.empty();
+          //wavesurfer1.load(songsList[s].music_id.file, songsList[s].music_id.waveform);
+          load1(songsList[s].music_id.file, songsList[s].music_id._id);
+          wavesurfer1.isReady = false;
+        }
+        $('#nextMusic').text('<%= lang.pages.nextMusic %>: ' + songsList[s].music_id.title + ' - ' + songsList[s].music_id.artistName);
+      }
+
+      function deleteSong(id) {
+        if (id == currentSong) {
+          if (songsList.length == 1) {
+            previousSong = currentSong;
+            currentSong = null;
+          }
+
+          $('#currentTitle').empty();
+          if ($('#waveform1').css('opacity') != 0)
+            wavesurfer1.empty();
+          if ($('#waveform2').css('opacity') != 0)
+            wavesurfer2.empty();
+        }
+        socket.emit('removeSong', '<%= name %>', songsList[id].music_id._id, id);
+      }
+
+      function loadWave(index) {
+        //playpause();
+        var id = index % songsList.length;
+        if (id < 0)
+          id = songsList.length + id;
+        if (currentSong == id)
+          return;
+
+        if (id == (currentSong + nextSong) % songsList.length) {
+          if (wavesurfer1.isPlaying() && wavesurfer2.isReady) {
+            wavesurfer1.pause();
+            finish1();
+            return wavesurfer2.play();
+          }
+
+          if (wavesurfer2.isPlaying() && wavesurfer1.isReady) {
+            wavesurfer2.pause();
+            finish2();
+            return wavesurfer1.play();
+          }
+        }
+
+        if (wavesurfer1.isPlaying())
+          wavesurfer1.pause();
+        if (wavesurfer2.isPlaying())
+          wavesurfer2.pause();
+
+        wavesurfer1.setVolume(masterVol);
+        wavesurfer2.setVolume(masterVol);
+        if (currentSong != null)
+          $('#song' + currentSong.toString()).removeClass('active');
+
+        $('#song' + id.toString()).addClass('active');
+        $('#currentTitle').text(songsList[id].music_id.title + ' - ' + songsList[id].music_id.artistName);
+        previousSong = currentSong;
+        currentSong = id;
+        wavesurfer1.empty();
+        wavesurfer1.on('ready', function() {
+          wavesurfer1.un('ready');
+          wavesurfer1.play();
+          wavesurfer2.empty();
+          var nextTemp = (currentSong + nextSong) % songsList.length;
+          //wavesurfer2.load(songsList[nextTemp].music_id.file, songsList[nextTemp].music_id.waveform);
+          wavesurfer2.isReady = false;
+          load2(songsList[nextTemp].music_id.file, songsList[nextTemp].music_id._id);
+          $('#nextMusic').text('<%= lang.pages.nextMusic %>: ' + songsList[nextTemp].music_id.title + ' - ' + songsList[nextTemp].music_id.artistName);
+        });
+        wavesurfer1.isReady = false;
+        //wavesurfer1.load(songsList[id].music_id.file, songsList[id].music_id.waveform);
+        // Hotfix waiting PR response
+        load1(songsList[id].music_id.file, songsList[id].music_id._id);
+        window.history.pushState("??", "??", "/playlist?name=" + encodeURI("<%= name %>") + "&play=" + id);
+        //wavesurfer1.play();
+
+        $('#waveform1').css('opacity', 1);
+        $('#waveform1').css('z-index', 10);
+        $('#waveform2').css('opacity', 0);
+        $('#waveform2').css('z-index', 5);
+      }
+
+      function wavesurfersInit() {
+        wavesurfer1 = WaveSurfer.create({
+          container: '#waveform1',
+          waveColor: 'black',
+          progressColor: 'grey',
+          barWidth: 3
+        });
+
+        wavesurfer2 = WaveSurfer.create({
+          container: '#waveform2',
+          waveColor: 'black',
+          progressColor: 'grey',
+          barWidth: 3
+        });
+
+        $('#waveform2').css('opacity', 0);
+
+        wavesurfer1.on('audioprocess', audioprocess1);
+
+        wavesurfer1.on('finish', finish1);
+
+        wavesurfer1.on('seek', seek1);
+
+        wavesurfer2.on('audioprocess', audioprocess2);
+
+        wavesurfer2.on('finish', finish2);
+
+        wavesurfer2.on('seek', seek2);
+      }
+
+      // Wavesurfer 1
+
+      function load1(url, id) {
+        wavesurfer1.backend.setPeaks([]);
+        wavesurfer1.drawBuffer();
+        socket.emit('getWaveform', true, id);
+        wavesurfer1.getArrayBuffer(url, data => wavesurfer1.loadArrayBuffer(data));
+      }
+
+      function finish1() {
+        fc1 = true;
+        wavesurfer1.setVolume(masterVol);
+        wavesurfer2.setVolume(masterVol);
+        $('#waveform1').css('opacity', 0);
+        $('#waveform1').css('z-index', 5);
+        $('#waveform2').css('opacity', 1);
+        $('#waveform2').css('z-index', 10);
+        if (currentSong != null)
+          $('#song' + currentSong.toString()).removeClass('active');
+
+        previousSong = currentSong;
+        currentSong = (currentSong + nextSong) % songsList.length;
+        $('#song' + currentSong.toString()).addClass('active');
+        $('#currentTitle').text(songsList[currentSong].music_id.title + ' - ' + songsList[currentSong].music_id.artistName);
+        window.history.pushState("??", "??", "/playlist?name=" + encodeURI("<%= name %>") + "&play=" + currentSong);
+
+        if (random)
+          nextSong = Math.floor(songsList.length * Math.random());
+
+        var id = (currentSong + nextSong) % songsList.length;
+        wavesurfer1.empty();
+        load1(songsList[id].music_id.file, songsList[id].music_id._id);
+        $('#nextMusic').text('<%= lang.pages.nextMusic %>: ' + songsList[id].music_id.title + ' - ' + songsList[id].music_id.artistName);
+        //wavesurfer1.load(songsList[id].music_id.file, songsList[id].music_id.waveform);
+        wavesurfer1.isReady = false;
+
+        if (currentSong == songsList.length - 1 && autoAddSimilarSong) {
+          socket.emit('addSimilar', '<%= name %>', songsList[Math.floor(Math.random() * songsList.length)].music_id._id);
+        }
+      }
+
+      function audioprocess1() {
+        if (wavesurfer1.getDuration() - wavesurfer1.getCurrentTime() <= fadeTime) {
+          if (fc1) {
+            wavesurfer2.play(0);
+            fc1 = false;
+          }
+          wavesurfer1.setVolume(masterVol * ((wavesurfer1.getDuration() - wavesurfer1.getCurrentTime()) / fadeTime));
+          wavesurfer2.setVolume(masterVol * (wavesurfer2.getCurrentTime() / fadeTime));
+        }
+      }
+
+      function seek1() {
+        fc1 = true;
+        $('#waveform1').css('opacity', 1);
+        $('#waveform2').css('opacity', 0);
+        wavesurfer2.pause();
+        wavesurfer1.setVolume(masterVol);
+      }
+
+      // WaveSurfer 2
+
+      function load2(url, id) {
+        wavesurfer2.backend.setPeaks([]);
+        wavesurfer2.drawBuffer();
+        socket.emit('getWaveform', false, id);
+        wavesurfer2.getArrayBuffer(url, data => wavesurfer2.loadArrayBuffer(data));
+      }
+
+      function finish2() {
+        fc2 = true;
+        wavesurfer1.setVolume(masterVol);
+        wavesurfer2.setVolume(masterVol);
+        $('#waveform1').css('opacity', 1);
+        $('#waveform1').css('z-index', 10);
+        $('#waveform2').css('opacity', 0);
+        $('#waveform2').css('z-index', 5);
+        if (currentSong != null)
+          $('#song' + currentSong.toString()).removeClass('active');
+
+        previousSong = currentSong;
+        currentSong = (currentSong + nextSong) % songsList.length;
+        $('#song' + currentSong.toString()).addClass('active');
+        $('#currentTitle').text(songsList[currentSong].music_id.title + ' - ' + songsList[currentSong].music_id.artistName);
+        window.history.pushState("??", "??", "/playlist?name=" + encodeURI("<%= name %>") + "&play=" + currentSong);
+
+        if (random)
+          nextSong = Math.floor(songsList.length * Math.random());
+
+        var id = (currentSong + nextSong) % songsList.length;
+        wavesurfer2.empty();
+        //wavesurfer2.load(songsList[id].music_id.file, songsList[id].music_id.waveform);
+        load2(songsList[id].music_id.file, songsList[id].music_id._id);
+        $('#nextMusic').text('<%= lang.pages.nextMusic %>: ' + songsList[id].music_id.title + ' - ' + songsList[id].music_id.artistName);
+        wavesurfer2.isReady = false;
+
+        if (currentSong == songsList.length - 1 && autoAddSimilarSong) {
+          socket.emit('addSimilar', '<%= name %>', songsList[Math.floor(Math.random() * songsList.length)].music_id._id);
+        }
+      }
+
+      function audioprocess2() {
+        if (wavesurfer2.getDuration() - wavesurfer2.getCurrentTime() <= fadeTime) {
+          if (fc2) {
+            wavesurfer1.play(0);
+            fc2 = false;
+          }
+          wavesurfer2.setVolume(masterVol * ((wavesurfer2.getDuration() - wavesurfer2.getCurrentTime()) / fadeTime));
+          wavesurfer1.setVolume(masterVol * (wavesurfer1.getCurrentTime() / fadeTime));
+        }
+      }
+
+      function seek2() {
+        fc2 = true;
+        $('#waveform2').css('opacity', 1);
+        $('#waveform1').css('opacity', 0);
+        wavesurfer1.pause();
+        wavesurfer2.setVolume(masterVol);
+      }
+
+      // UI
+
+      function loadingNotif() {
+        notify = $.notify({
+          icon: 'fa fa-circle-o-notch fa-spin',
+          message: '<%= lang.pages.loading %>'
+        }, {
+          type: 'info',
+          delay: 0
+        });
+      }
+
+      function add() {
+        socket.emit('addSong', '<%= name %>', $('#url').val());
+        loadingNotif();
+        $('#url').val('');
+        return false;
+      }
+
+      function addSimilar() {
+        loadingNotif();
+        socket.emit('addSimilar', '<%= name %>', songsList[currentSong].music_id._id);
+      }
+
+      function del(eve) {
+        eve.stopPropagation();
+        loadingNotif();
+        socket.emit('removePlaylist', '<%= name %>');
+        setTimeout(function() {
+          window.location.replace("./allPlaylists");
+        }, 5000);
+      }
+
+      function download(eve) {
+        eve.stopPropagation();
+        loadingNotif();
+        socket.emit('downloadPlaylist', '<%= name %>');
+      }
+
+      function playpause() {
+        if ($('#waveform1').css('opacity') != 0) {
+          wavesurfer1.playPause();
+          if (wavesurfer1.getDuration() - wavesurfer1.getCurrentTime() <= fadeTime) {
+            wavesurfer2.playPause();
+          }
+        }
+        if ($('#waveform2').css('opacity') != 0) {
+          wavesurfer2.playPause();
+          if (wavesurfer2.getDuration() - wavesurfer2.getCurrentTime() <= fadeTime) {
+            wavesurfer1.playPause();
+          }
+        }
+
+        if (!currentSong && songsList.length > 0) {
+          loadWave(0);
+        }
+      }
+
+      function randomf() {
+        if (random) {
+          random = false;
+          nextSong = 1;
+          $('#random').removeClass('btn-default').addClass('btn-primary');
+          loadNextWave((currentSong + nextSong) % songsList.length);
+        } else {
+          random = true;
+          nextSong = Math.floor(songsList.length * Math.random());
+          loadNextWave((currentSong + nextSong) % songsList.length);
+          $('#random').removeClass('btn-primary').addClass('btn-default');
+        }
+      }
+
+      function previousf() {
+        if (currentSong !== undefined)
+          loadWave(previousSong);
+      }
+
+      function nextf() {
+        if (currentSong !== undefined)
+          loadWave(currentSong + nextSong);
+      }
+
+      function onSlide(e) {
+        if (e.value.newValue == 1) {
+          masterVol = 0;
+          wavesurfer1.setVolume(masterVol);
+          wavesurfer2.setVolume(masterVol);
+        } else {
+          masterVol = e.value.newValue / 100;
+          wavesurfer1.setVolume(masterVol);
+          wavesurfer2.setVolume(masterVol);
+        }
+        sessionStorage.setItem('masterVol', masterVol);
+
+      }
+
+      function sync(val) {
+        if (val != syncImportedPlaylist)
+          socket.emit('editPlaylistOptions', '<%= name %>', val, autoAddSimilarSong);
+      }
+
+      function autoAdd(val) {
+        if (val != autoAddSimilarSong)
+          socket.emit('editPlaylistOptions', '<%= name %>', syncImportedPlaylist, val);
+
+      }
+
+      $(document).ready(function() {
+        if ((new URL(window.location.href)).searchParams.get("play") != null) {
+          loadSong = true;
+        }
+        wavesurfersInit();
+
+        $('#add').submit(add);
+        $('#addSimilar').click(addSimilar);
+        $('#del').click(del);
+        $('#download').click(download);
+        $('#playpause').click(playpause);
+        $('#random').click(randomf);
+        $('#previous').click(previousf);
+        $('#next').click(nextf);
+        $('#sIPOn').parent().click(function() {
+          sync(true);
+        });
+        $('#sIPOff').parent().click(function() {
+          sync(false);
+        });
+        $('#aASSOn').parent().click(function() {
+          autoAdd(true);
+        });
+        $('#aASSOff').parent().click(function() {
+          autoAdd(false);
+        });
+
+        var vol = $("#vol").slider({
+          formatter: function(value) {
+            if (value == 1)
+              return '<%= lang.pages.muted %>';
+            else
+              return '<%= lang.pages.volume %>: ' + value + '%';
+          },
+          min: 0,
+          max: 100,
+          scale: 'logarithmic',
+          step: 0.1,
+          value: masterVol * 100
+        }).on('change', onSlide);
+
+        $(document).keypress(function(e) {
+          if (e.which == 80 || e.which == 112) {
+            playpause();
+          }
+          if (e.which == 82 || e.which == 114) {
+            randomf();
+          }
+          if (e.which == 66 || e.which == 98) {
+            previousf();
+          }
+          if (e.which == 78 || e.which == 110) {
+            nextf();
+          }
+        });
+      });
+    </script>
+</footer>
+
+</html>

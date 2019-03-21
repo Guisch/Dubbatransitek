@@ -1,5 +1,4 @@
 module.exports = function(app, passport, lang) {
-
     // normal routes ===============================================================
 
     // show the home page (will also have our login links)
@@ -27,15 +26,26 @@ module.exports = function(app, passport, lang) {
         });
     });
 
-    app.get('/musics/', isLoggedIn, function(req, res) {
+    app.get('/playlist/', isLoggedIn, function(req, res) {
         if (req.query.name)
-            res.render('pages/musics.ejs', {
+            res.render('pages/playlist.ejs', {
                 name: req.query.name,
                 lang: lang,
                 masterVol: req.session.masterVol
             });
         else
-            res.redirect('/playlists');
+            res.redirect('/myPlaylists');
+    });
+
+    app.get('/music/', isLoggedIn, function(req, res) {
+        if (req.query.id)
+            res.render('pages/editMusic.ejs', {
+                name: req.query.id,
+                lang: lang,
+                masterVol: req.session.masterVol
+            });
+        else
+            res.redirect('/myPlaylists');
     });
 
     // PROFILE SECTION =========================

@@ -6,30 +6,39 @@
 
 #waveform1 {
   margin: 20px;
+  position: relative;
 }
 
 #waveform2 {
   margin: -148px 20px 20px 20px;
+  position: relative;
 }
 
 .miniature {
-  width: 50px!important;
-  height: 50px!important;
+  width: 50px !important;
+  height: 50px !important;
   margin-right: 10px;
 }
 
 .link {
   margin-left: 10px;
-  float: right;
 }
 
 .cursorP {
   cursor: pointer;
 }
 
+.cursorR {
+  cursor: n-resize;
+}
+
 .thumb {
   height: 50%;
   width: 50%;
+}
+
+.thumb2 {
+  width: 50px;
 }
 
 .btn {
@@ -41,6 +50,40 @@
 }
 
 .slider.slider-horizontal {
-  width: 100%!important;
+  width: 100% !important;
   margin-top: 7px;
+}
+
+@media (min-width: 640px) {
+  .musicSticky {
+    position: -webkit-sticky;
+    top: 0;
+    position: sticky;
+    z-index: 1000;
+  }
+}
+
+.whiteBg {
+  background: white;
+}
+
+.whiteGradient {
+  background: linear-gradient(white 60%, transparent);
+}
+
+.float-left {
+  float: left;
+}
+
+.margintop-15 {
+  margin-top: 15px;
+}
+
+.marginright-15 {
+  margin-right: 15px;
+}
+
+.no-margin {
+  margin-right: 0px;
+  margin-left: 0px;
 }
