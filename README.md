@@ -173,7 +173,7 @@ By default, it will use the environment variable PORT, or 8880 if there's nothin
  - Import playlist from youtube, deezer or spotify section
  - Improve download playlist function (add field on playlist model)
  - Party mode to be enable to remote control playlist
- - Feed of last added song with the abilty to like and comment
+ - Feed of last added song with the ability to like and comment
  - Feel free to propose in issue section
 
 ## Tip
